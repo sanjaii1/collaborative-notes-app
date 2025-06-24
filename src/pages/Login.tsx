@@ -12,35 +12,42 @@ type LoginForm = z.infer<typeof loginSchema>;
 
 export default function Login(): React.JSX.Element {
     const navigate = useNavigate();
-  const user = useAuthStore((state) => state.user);
-//   const logout = useAuthStore((state) => state.logout);
+    const user = useAuthStore((state) => state.user);
+    //   const logout = useAuthStore((state) => state.logout);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginForm>({ resolver: zodResolver(loginSchema) });
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<LoginForm>({ resolver: zodResolver(loginSchema) });
 
-  const onSubmit = async (data: LoginForm) => {
-    try {
-        const res = await api.post("/auth/login", data);
-        const { user, token } = res.data;
-    
-        useAuthStore.getState().login(user, token);
-        navigate("/dashboard");
-      } catch (err) {
-        console.error("Login failed:", err);
-      }
-  };
 
-  return (
-    <div className="max-w-sm mx-auto mt-24 bg-white p-6 rounded-md shadow-md">
-      <h2 className="text-2xl font-bold mb-6">Login</h2>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <AuthInput label="Email" type="email" {...register("email")} error={errors.email} />
-        <AuthInput label="Password" type="password" {...register("password")} error={errors.password} />
-        <button className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 mt-2">Login</button>
-      </form>
-    </div>
-  );
+    const onSubmit = async (data: LoginForm) => {
+        try {
+
+            const fakeUser = {
+                id: "123",
+                name: "Test User",
+                email: data.email,
+            };
+            const fakeToken = "fake-jwt-token";
+
+            useAuthStore.getState().login(fakeUser, fakeToken);
+            navigate("/dashboard");
+        } catch (err) {
+            console.error("Login failed:", err);
+        }
+    };
+
+
+    return (
+        <div className="max-w-sm mx-auto mt-24 bg-white p-6 rounded-md shadow-md">
+            <h2 className="text-2xl font-bold mb-6">Login</h2>
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <AuthInput label="Email" type="email" {...register("email")} error={errors.email} />
+                <AuthInput label="Password" type="password" {...register("password")} error={errors.password} />
+                <button className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 mt-2">Login</button>
+            </form>
+        </div>
+    );
 }

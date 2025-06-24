@@ -5,10 +5,16 @@ import { loginSchema } from "../lib/validationSchemas";
 import { z } from "zod";
 import AuthInput from "../components/AuthInput";
 import api from "../services/api";
+import { useAuthStore } from "../store/authStore";
+import { useNavigate } from "react-router-dom";
 
 type LoginForm = z.infer<typeof loginSchema>;
 
-export default function Login() {
+export default function Login(): React.JSX.Element {
+    const navigate = useNavigate();
+  const user = useAuthStore((state) => state.user);
+//   const logout = useAuthStore((state) => state.logout);
+
   const {
     register,
     handleSubmit,
@@ -17,11 +23,14 @@ export default function Login() {
 
   const onSubmit = async (data: LoginForm) => {
     try {
-      const res = await api.post("/auth/login", data);
-      console.log("Login success:", res.data);
-    } catch (err) {
-      console.error("Login failed:", err);
-    }
+        const res = await api.post("/auth/login", data);
+        const { user, token } = res.data;
+    
+        useAuthStore.getState().login(user, token);
+        navigate("/dashboard");
+      } catch (err) {
+        console.error("Login failed:", err);
+      }
   };
 
   return (

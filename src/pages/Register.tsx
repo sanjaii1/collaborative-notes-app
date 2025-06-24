@@ -8,7 +8,7 @@ import api from "../services/api";
 
 type RegisterForm = z.infer<typeof registerSchema>;
 
-export default function Register() {
+export default function Register(): React.JSX.Element {
   const {
     register,
     handleSubmit,

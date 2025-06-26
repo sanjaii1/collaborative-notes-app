@@ -3,6 +3,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
+import ForgotPassword from "./pages/ForgotPassword";
 
 export default function App(): React.JSX.Element {
   return (
@@ -10,8 +11,6 @@ export default function App(): React.JSX.Element {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
-
-        {/* Protected Route */}
         <Route
           path="/dashboard"
           element={
@@ -20,6 +19,7 @@ export default function App(): React.JSX.Element {
             </ProtectedRoute>
           }
         />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
       </Routes>
     </BrowserRouter>
   );

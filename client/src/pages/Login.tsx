@@ -1,4 +1,3 @@
-// src/pages/Login.tsx
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "../lib/validationSchemas";
@@ -7,6 +6,7 @@ import AuthInput from "../components/AuthInput";
 import api from "../services/api";
 import { useAuthStore } from "../store/authStore";
 import { useNavigate } from "react-router-dom";
+import LogoHeader from "../components/LogoHeader";
 // import api from "../lib/axios";
 
 type LoginForm = z.infer<typeof loginSchema>;
@@ -24,14 +24,18 @@ export default function Login(): React.JSX.Element {
 
 
     const onSubmit = async (data: LoginForm) => {
-        try {
+        const dummyUser = {
+            id: "1",
+            name: "Demo User",
+            email: "demo@example.com"
+        };
+        const dummyToken = "dummy-token-123";
 
-            const res = await api.post("/auth/login", data);
-            const { user, token } = res.data;
-            useAuthStore.getState().login(user, token);
+        if (data.email === "demo@example.com" && data.password === "password") {
+            useAuthStore.getState().login(dummyUser, dummyToken);
             navigate("/dashboard");
-        } catch (err) {
-            console.error("Login failed:", err);
+        } else {
+            alert("Invalid credentials. Try demo@example.com / password");
         }
     };
 
@@ -39,7 +43,8 @@ export default function Login(): React.JSX.Element {
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-blue-300 to-blue-500">
             <div className="w-full max-w-md bg-white/90 p-8 rounded-2xl shadow-2xl border border-blue-100">
-                <h2 className="text-3xl font-extrabold text-center text-blue-700 mb-8 tracking-tight">
+                <LogoHeader />
+                <h2 className="text-2xl font-bold text-center text-blue-700 mb-6">
                     Sign in to your account
                 </h2>
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -60,6 +65,11 @@ export default function Login(): React.JSX.Element {
                     >
                         Login
                     </button>
+                    <div className="text-right mt-2">
+                        <a href="/forgot-password" className="text-blue-600 hover:underline text-sm">
+                            Forgot password?
+                        </a>
+                    </div>
                 </form>
                 <div className="mt-6 text-center text-sm text-gray-500">
                     Don&apos;t have an account?{" "}

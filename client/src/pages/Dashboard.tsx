@@ -1,93 +1,48 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { fetchNotes, createNote, updateNote, deleteNote } from "../api/noteApi";
+import Sidebar from "../components/Sidebar";
+import OverviewWidgets from "../components/OverviewWidgets";
+import PinnedNotes from "../components/PinnedNotes";
+import NotesToolbar from "../components/NotesToolbar";
+import NotesList from "../components/NotesList";
+import QuickCreateNoteModal from "../components/QuickCreateNoteModal";
+import RecentActivityFeed from "../components/RecentActivityFeed";
+import CollaborationQuickAccess from "../components/CollaborationQuickAccess";
 import { useState } from "react";
 
 export default function Dashboard(): React.JSX.Element {
-  const queryClient = useQueryClient();
-  const [form, setForm] = useState({ title: "", content: "" });
-  const [editId, setEditId] = useState<string | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
-  const { data: notes, isLoading } = useQuery({
-    queryKey: ["notes"],
-    queryFn: fetchNotes,
-  });
-
-  const create = useMutation({
-    mutationFn: createNote,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["notes"] });
-      setForm({ title: "", content: "" });
-    },
-  });
-
-  const update = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: typeof form }) =>
-      updateNote(id, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["notes"] });
-      setForm({ title: "", content: "" });
-      setEditId(null);
-    },
-  });
-
-  const remove = useMutation({
-    mutationFn: deleteNote,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["notes"] }),
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (editId) {
-      update.mutate({ id: editId, data: form });
-    } else {
-      create.mutate(form);
-    }
-  };
-
-  const handleEdit = (note: any) => {
-    setForm({ title: note.title, content: note.content });
-    setEditId(note._id);
+  const handleCreateNote = (note: { title: string; content: string; tags: string[] }) => {
+    alert(`Created note: ${note.title}`);
+    // Here you would add the note to your state or refetch notes
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4">📝 Your Notes</h2>
-
-      <form onSubmit={handleSubmit} className="space-y-2 mb-4">
-        <input
-          className="w-full border p-2 rounded"
-          placeholder="Title"
-          value={form.title}
-          onChange={(e) => setForm({ ...form, title: e.target.value })}
-        />
-        <textarea
-          className="w-full border p-2 rounded"
-          placeholder="Content"
-          value={form.content}
-          onChange={(e) => setForm({ ...form, content: e.target.value })}
-        />
-        <button className="bg-blue-600 text-white px-4 py-2 rounded" type="submit">
-          {editId ? "Update Note" : "Add Note"}
+    <div className="flex min-h-screen bg-gray-50">
+      <Sidebar />
+      <main className="flex-1 p-8 relative">
+        <h2 className="text-2xl font-bold mb-4 text-gray-800">Dashboard Overview</h2>
+        <OverviewWidgets />
+        <PinnedNotes />
+        <NotesToolbar />
+        <NotesList />
+        <button
+          className="fixed bottom-8 right-8 bg-blue-600 text-white rounded-full w-16 h-16 flex items-center justify-center text-3xl shadow-lg hover:bg-blue-700 transition z-50"
+          onClick={() => setModalOpen(true)}
+          title="Create New Note"
+        >
+          +
         </button>
-      </form>
-
-      {isLoading ? (
-        <p>Loading notes...</p>
-      ) : (
-        <ul className="space-y-3">
-          {notes?.map((note: any) => (
-            <li key={note._id} className="bg-white shadow p-3 rounded">
-              <h3 className="text-lg font-semibold">{note.title}</h3>
-              <p>{note.content}</p>
-              <div className="mt-2 space-x-2">
-                <button onClick={() => handleEdit(note)} className="text-blue-600">Edit</button>
-                <button onClick={() => remove.mutate(note._id)} className="text-red-600">Delete</button>
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
+        <QuickCreateNoteModal
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+          onCreate={handleCreateNote}
+        />
+      </main>
+      <div className="hidden lg:flex flex-col gap-6 w-80 ml-6">
+        <RecentActivityFeed />
+        <CollaborationQuickAccess />
+      </div>
     </div>
   );
-};
+}
 

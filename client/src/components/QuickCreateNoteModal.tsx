@@ -23,7 +23,7 @@ const QuickCreateNoteModal: React.FC<QuickCreateNoteModalProps> = ({ open, onClo
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
+    <div className="fixed inset-0 z-50 flex items-center justify-center  backdrop-blur-sm">
       <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
         <h3 className="text-lg font-semibold mb-4">Create New Note</h3>
         <form onSubmit={handleSubmit} className="space-y-3">

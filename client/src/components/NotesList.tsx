@@ -1,51 +1,25 @@
 import React, { useState } from "react";
 import NoteCard from "./NoteCard";
+import { useQuery } from "@tanstack/react-query";
+import { fetchNotes } from "../services/noteApi";
 
-const mockNotes = [
-  {
-    id: "1",
-    title: "Meeting Notes",
-    content: "Discussed project timeline and deliverables...",
-    tags: ["Work"],
-    collaborators: ["Alex"],
-    isPinned: false,
-    isFavorite: true,
-    isShared: true,
-  },
-  {
-    id: "2",
-    title: "Personal Journal",
-    content: "Today I went to the park and read a book...",
-    tags: ["Personal"],
-    collaborators: [],
-    isPinned: false,
-    isFavorite: false,
-    isShared: false,
-  },
-  {
-    id: "3",
-    title: "Project Plan",
-    content: "Outline project milestones and deliverables for Q2...",
-    tags: ["Work", "Planning"],
-    collaborators: ["Sam"],
-    isPinned: true,
-    isFavorite: false,
-    isShared: true,
-  },
-  {
-    id: "4",
-    title: "Budget 2025",
-    content: "Draft budget for next year, including all departments...",
-    tags: ["Finance"],
-    collaborators: ["John"],
-    isPinned: false,
-    isFavorite: false,
-    isShared: true,
-  },
-];
+type Note = {
+  id: string;
+  title: string;
+  content: string;
+  tags: string[];
+  collaborators: string[];
+  isPinned: boolean;
+  isFavorite: boolean;
+  isShared: boolean;
+};
 
 const NotesList: React.FC = () => {
   const [selected, setSelected] = useState<string[]>([]);
+  const { data: notes, isLoading, error, refetch } = useQuery({
+    queryKey: ["notes"],
+    queryFn: fetchNotes,
+  });
 
   const handleCheck = (id: string) => {
     setSelected((prev) =>
@@ -54,12 +28,17 @@ const NotesList: React.FC = () => {
   };
 
   const handleBatchDelete = () => {
-    // Mock batch delete
     alert(`Deleted notes: ${selected.join(", ")}`);
     setSelected([]);
   };
 
-  if (mockNotes.length === 0) {
+  if (isLoading) {
+    return <div className="text-center text-gray-400 italic">Loading notes...</div>;
+  }
+  if (error) {
+    return <div className="text-center text-red-400 italic">Error loading notes.</div>;
+  }
+  if (!notes || notes.length === 0) {
     return <div className="text-center text-gray-400 italic">No notes found.</div>;
   }
 
@@ -77,13 +56,12 @@ const NotesList: React.FC = () => {
         </div>
       )}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {mockNotes.map((note) => (
+        {notes.map((note: Note) => (
           <NoteCard
             key={note.id}
             {...note}
             checked={selected.includes(note.id)}
             onCheck={handleCheck}
-            // Mock handlers for actions
             onPin={() => alert(`Pin/unpin note ${note.id}`)}
             onFavorite={() => alert(`Favorite/unfavorite note ${note.id}`)}
             onShare={() => alert(`Share note ${note.id}`)}

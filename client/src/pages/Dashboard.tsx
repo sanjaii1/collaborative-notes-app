@@ -1,19 +1,35 @@
-import Sidebar from "../components/Sidebar";
+// import Sidebar from "../components/Sidebar";
 import OverviewWidgets from "../components/OverviewWidgets";
 import PinnedNotes from "../components/PinnedNotes";
-import NotesToolbar from "../components/NotesToolbar";
+// import NotesToolbar from "../components/NotesToolbar";
 import NotesList from "../components/NotesList";
 import QuickCreateNoteModal from "../components/QuickCreateNoteModal";
-import RecentActivityFeed from "../components/RecentActivityFeed";
-import CollaborationQuickAccess from "../components/CollaborationQuickAccess";
+// import RecentActivityFeed from "../components/RecentActivityFeed";
+// import CollaborationQuickAccess from "../components/CollaborationQuickAccess";
+import { toast } from "react-toastify";
+
+import {
+  fetchNotes,
+  createNote,
+  updateNote,
+  deleteNote
+} from "../services/noteApi";
 import { useState } from "react";
 
 export default function Dashboard(): React.JSX.Element {
   const [modalOpen, setModalOpen] = useState(false);
 
-  const handleCreateNote = (note: { title: string; content: string; tags: string[] }) => {
-    alert(`Created note: ${note.title}`);
-    // Here you would add the note to your state or refetch notes
+  const handleCreateNote = async (note: { title: string; content: string; tags: string[] }) => {
+    try {
+      // If your API expects tags, include them; otherwise, just title and content
+      await createNote({ title: note.title, content: note.content, tags: note.tags });
+      // Optionally, show a success toast and refresh notes
+      toast.success("Note created!");
+      // refetch notes or update state here
+    } catch (err: any) {
+      // Optionally, show an error toast
+      toast.error(err.response?.data?.message || "Failed to create note");
+    }
   };
 
   return (

@@ -20,12 +20,7 @@ const noteSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    tags: [
-      {
-        type: String,
-        enum: ["Work", "Personal", "Urgent", "Other"], // You can customize this
-      },
-    ],
+    tags: [String],
     sharedWith: [
       {
         type: mongoose.Schema.Types.ObjectId,

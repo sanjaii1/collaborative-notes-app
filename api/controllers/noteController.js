@@ -7,10 +7,10 @@ export const getNotes = async (req, res) => {
 };
 
 export const createNote = async (req, res) => {
-  const { title, content } = req.body;
+  const { title, content,tags } = req.body;
   if (!title || !content) return res.status(400).json({ message: "Missing fields" });
 
-  const note = await Note.create({ user: req.user.id, title, content });
+  const note = await Note.create({ user: req.user.id, title, content, tags });
   res.status(201).json(note);
 };
 

@@ -1,4 +1,4 @@
-import axios from "./axiosInstance";
+import axios from "./api";
 
 export const register = async (
   userData: { name: string; email: string; password: string }

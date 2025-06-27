@@ -1,8 +1,22 @@
 import React, { useState, useMemo } from "react";
-import { mockNotes } from "../mock/data";
 import { FaStar, FaRegStar, FaTrash, FaEdit, FaUsers, FaTh, FaBars, FaEye } from "react-icons/fa";
 import QuickCreateNoteModal from "../components/QuickCreateNoteModal";
 import NoteDetailModal from "../components/NoteDetailModal";
+import { useQuery } from "@tanstack/react-query";
+import { fetchNotes ,createNote} from "../services/noteApi";
+import { toast } from "react-toastify";
+
+
+type Note = {
+  id: string;
+  title: string;
+  content: string;
+  tags: string[];
+  collaborators: string[];
+  isPinned: boolean;
+  isFavorite: boolean;
+  isShared: boolean;
+};
 
 const sortOptions = [
   { label: "Last Edited", value: "lastEdited" },
@@ -13,6 +27,10 @@ const sortOptions = [
 ];
 
 const AllNotesPage: React.FC = () => {
+  const { data: notes = [], isLoading, error, refetch } = useQuery({
+    queryKey: ["notes"],
+    queryFn: fetchNotes,
+  });
   const [view, setView] = useState<"grid" | "list">("grid");
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState(sortOptions[0].value);
@@ -20,16 +38,15 @@ const AllNotesPage: React.FC = () => {
   const [detailOpen, setDetailOpen] = useState(false);
   const [selectedNote, setSelectedNote] = useState<any>(null);
 
-  // Filter, search, and sort notes
-  const notes = useMemo(() => {
-    let filtered = [...mockNotes];
+  const filteredNotes = useMemo(() => {
+    let filtered = [...notes];
     if (search.trim()) {
       const q = search.toLowerCase();
       filtered = filtered.filter(
         n =>
           n.title.toLowerCase().includes(q) ||
           n.content.toLowerCase().includes(q) ||
-          n.tags.some(tag => tag.toLowerCase().includes(q))
+          n.tags.some((tag: string) => tag.toLowerCase().includes(q))
       );
     }
     switch (sort) {
@@ -47,11 +64,16 @@ const AllNotesPage: React.FC = () => {
         break;
     }
     return filtered;
-  }, [search, sort]);
+  }, [notes, search, sort]);
 
-  const handleCreateNote = (note: { title: string; content: string; tags: string[] }) => {
-    alert(`Created note: ${note.title}`);
-    // Here you would add the note to your state or refetch notes
+  const handleCreateNote = async (note: { title: string; content: string; tags: string[] }) => {
+    try {
+      await createNote({ title: note.title, content: note.content, tags: note.tags });
+      toast.success("Note created!");
+      refetch()
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || "Failed to create note");
+    }
   };
 
   return (
@@ -98,11 +120,11 @@ const AllNotesPage: React.FC = () => {
           </button>
         </div>
       </div>
-      {notes.length === 0 ? (
+      {filteredNotes.length === 0 ? (
         <div className="text-center text-gray-400 italic mt-12">No notes found.</div>
       ) : view === "grid" ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {notes.map(note => (
+          {filteredNotes.map((note: Note) => (
             <div
               key={note.id}
               className="bg-white rounded-lg shadow p-4 flex flex-col gap-2 cursor-pointer hover:ring-2 ring-blue-200"
@@ -139,7 +161,7 @@ const AllNotesPage: React.FC = () => {
         </div>
       ) : (
         <div className="divide-y bg-white rounded-lg shadow">
-          {notes.map(note => (
+          {filteredNotes.map((note: Note) => (
             <div
               key={note.id}
               className="flex items-center gap-4 px-4 py-3 cursor-pointer hover:ring-2 ring-blue-200"

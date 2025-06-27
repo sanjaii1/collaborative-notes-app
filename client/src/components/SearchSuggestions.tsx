@@ -34,7 +34,7 @@ const SearchSuggestions: React.FC<SearchSuggestionsProps> = ({ query, suggestion
         items.length > 0 ? (
           <div key={group}>
             <div className="px-3 py-1 text-xs text-gray-400 uppercase bg-gray-50">{group}</div>
-            {items.map((item, idx) => (
+            {items.map((item: string, idx: number) => (
               <button
                 key={item + idx}
                 className="w-full text-left px-3 py-2 hover:bg-blue-50 text-sm"

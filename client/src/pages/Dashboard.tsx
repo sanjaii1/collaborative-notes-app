@@ -17,31 +17,34 @@ export default function Dashboard(): React.JSX.Element {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      <Sidebar />
+    <div className="flex  bg-gray-50">
+      {/* <Sidebar /> */}
       <main className="flex-1 p-8 relative">
-        <h2 className="text-2xl font-bold mb-4 text-gray-800">Dashboard Overview</h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-2xl font-bold text-gray-800">Dashboard Overview</h2>
+          <button
+            className="bg-blue-600 text-white px-5 py-2 rounded font-semibold shadow hover:bg-blue-700 transition"
+            onClick={() => setModalOpen(true)}
+            title="Add Note"
+          >
+            + Add Note
+          </button>
+        </div>
         <OverviewWidgets />
         <PinnedNotes />
-        <NotesToolbar />
+        {/* <NotesToolbar /> */}
         <NotesList />
-        <button
-          className="fixed bottom-8 right-8 bg-blue-600 text-white rounded-full w-16 h-16 flex items-center justify-center text-3xl shadow-lg hover:bg-blue-700 transition z-50"
-          onClick={() => setModalOpen(true)}
-          title="Create New Note"
-        >
-          +
-        </button>
+
         <QuickCreateNoteModal
           open={modalOpen}
           onClose={() => setModalOpen(false)}
           onCreate={handleCreateNote}
         />
       </main>
-      <div className="hidden lg:flex flex-col gap-6 w-80 ml-6">
+      {/* <div className="hidden lg:flex flex-col gap-6 w-80 ml-6">
         <RecentActivityFeed />
         <CollaborationQuickAccess />
-      </div>
+      </div> */}
     </div>
   );
 }

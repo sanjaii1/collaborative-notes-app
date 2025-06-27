@@ -1,4 +1,5 @@
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema } from "../lib/validationSchemas";
 import { z } from "zod";
@@ -6,10 +7,13 @@ import AuthInput from "../components/AuthInput";
 import api from "../services/api";
 import { Link } from "react-router-dom";
 import LogoHeader from "../components/LogoHeader";
+import { useAuthStore } from "../store/authStore";
+import { toast } from "react-toastify";
 
 type RegisterForm = z.infer<typeof registerSchema>;
 
 export default function Register(): React.JSX.Element {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -19,11 +23,17 @@ export default function Register(): React.JSX.Element {
   const onSubmit = async (data: RegisterForm) => {
     try {
       const res = await api.post("/auth/register", data);
-      console.log("Registration success:", res.data);
-    } catch (err) {
-      console.error("Registration failed:", err);
+      const { user, token } = res.data;
+  
+      useAuthStore.getState().login(user, token);
+      toast.success("Registration successful!");
+      navigate("/dashboard");
+      
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || "Registration failed");
     }
   };
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-blue-300 to-blue-500">

@@ -7,13 +7,14 @@ import api from "../services/api";
 import { useAuthStore } from "../store/authStore";
 import { useNavigate } from "react-router-dom";
 import LogoHeader from "../components/LogoHeader";
+import { toast } from "react-toastify";
 // import api from "../lib/axios";
 
 type LoginForm = z.infer<typeof loginSchema>;
 
 export default function Login(): React.JSX.Element {
     const navigate = useNavigate();
-    const user = useAuthStore((state) => state.user);
+    // const user = useAuthStore(state => state.user);
     //   const logout = useAuthStore((state) => state.logout);
 
     const {
@@ -24,20 +25,18 @@ export default function Login(): React.JSX.Element {
 
 
     const onSubmit = async (data: LoginForm) => {
-        const dummyUser = {
-            id: "1",
-            name: "Demo User",
-            email: "demo@example.com"
-        };
-        const dummyToken = "dummy-token-123";
-
-        if (data.email === "demo@example.com" && data.password === "password") {
-            useAuthStore.getState().login(dummyUser, dummyToken);
-            navigate("/dashboard");
-        } else {
-            alert("Invalid credentials. Try demo@example.com / password");
+        try {
+          const res = await api.post("/auth/login", data);
+          const { user, token } = res.data;
+      
+          useAuthStore.getState().login(user, token);
+          toast.success("Login successful!");
+          navigate("/dashboard");
+        } catch (err: any) {
+            toast.error(err.response?.data?.message || "Login failed");
         }
-    };
+      };
+      
 
 
     return (

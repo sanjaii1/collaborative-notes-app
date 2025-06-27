@@ -1,46 +1,53 @@
 // api/controllers/authController.js
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 import { User } from "../models/userModel.js";
+import jwt from "jsonwebtoken";
 
+// 🔐 Create JWT token
+const generateToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: "7d",
+  });
+};
+
+// ✅ POST /api/auth/register
 export const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
 
-  try {
-    const exists = await User.findOne({ email });
-    if (exists) return res.status(400).json({ message: "User already exists" });
+  if (!name || !email || !password)
+    return res.status(400).json({ message: "All fields are required" });
 
-    const hashed = await bcrypt.hash(password, 10);
+  const userExists = await User.findOne({ email });
+  if (userExists)
+    return res.status(400).json({ message: "User already exists" });
 
-    const user = await User.create({ name, email, password: hashed });
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
+  const user = await User.create({ name, email, password });
 
-    res.status(201).json({
-      user: { id: user._id, name: user.name, email: user.email },
-      token,
-    });
-  } catch (err) {
-    res.status(500).json({ message: "Register failed", error: err.message });
-  }
+  res.status(201).json({
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    token: generateToken(user._id),
+  });
 };
 
+// ✅ POST /api/auth/login
 export const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
-  try {
-    const user = await User.findOne({ email });
-    if (!user) return res.status(404).json({ message: "User not found" });
+  const user = await User.findOne({ email });
+  if (!user || !(await user.matchPassword(password)))
+    return res.status(401).json({ message: "Invalid credentials" });
 
-    const match = await bcrypt.compare(password, user.password);
-    if (!match) return res.status(401).json({ message: "Invalid credentials" });
+  res.json({
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    token: generateToken(user._id),
+  });
+};
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
-
-    res.json({
-      user: { id: user._id, name: user.name, email: user.email },
-      token,
-    });
-  } catch (err) {
-    res.status(500).json({ message: "Login failed", error: err.message });
-  }
+// ✅ GET /api/auth/me (Protected)
+export const getMe = async (req, res) => {
+  const user = await User.findById(req.user.id).select("-password");
+  res.json(user);
 };

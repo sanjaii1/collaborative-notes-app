@@ -46,7 +46,6 @@ const NoteCard: React.FC<NoteCardProps> = ({
   lastEdited,
   checked,
   onCheck,
-  onPin,
   onFavorite,
   onShare,
   onDelete,

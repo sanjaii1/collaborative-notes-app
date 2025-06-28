@@ -38,6 +38,10 @@ const AllNotesPage: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [detailOpen, setDetailOpen] = useState(false);
   const [selectedNote, setSelectedNote] = useState<any>(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [noteToDelete, setNoteToDelete] = useState<Note | null>(null);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [noteToEdit, setNoteToEdit] = useState<Note | null>(null);
 
   const filteredNotes = useMemo(() => {
     let filtered = [...notes];
@@ -88,14 +92,40 @@ const AllNotesPage: React.FC = () => {
   };
 
   const handleDeleteNote = async (note: Note) => {
-    if (window.confirm(`Are you sure you want to delete "${note.title}"?`)) {
-      try {
-        await deleteNote(note.id);
-        toast.success("Note deleted!");
-        refetch();
-      } catch (err: any) {
-        toast.error(err.response?.data?.message || "Failed to delete note");
-      }
+    setNoteToDelete(note);
+    setDeleteModalOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!noteToDelete) return;
+    
+    try {
+      await deleteNote(noteToDelete.id);
+      toast.success("Note deleted!");
+      refetch();
+      setDeleteModalOpen(false);
+      setNoteToDelete(null);
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || "Failed to delete note");
+    }
+  };
+
+  const handleEditNote = (note: Note) => {
+    setNoteToEdit(note);
+    setEditModalOpen(true);
+  };
+
+  const handleUpdateNote = async (noteData: { title: string; content: string; tags: string[] }) => {
+    if (!noteToEdit) return;
+    
+    try {
+      await updateNote(noteToEdit.id, noteData);
+      toast.success("Note updated!");
+      refetch();
+      setEditModalOpen(false);
+      setNoteToEdit(null);
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || "Failed to update note");
     }
   };
 
@@ -164,7 +194,7 @@ const AllNotesPage: React.FC = () => {
                     <FaShareAlt className="text-blue-500 hover:text-blue-700" />
                   </button>
                   {note.isShared && <FaUsers className="text-green-500" title="Shared" />}
-                  <button title="Edit"><FaEdit className="text-blue-400" /></button>
+                  <button title="Edit" onClick={() => handleEditNote(note)}><FaEdit className="text-blue-400" /></button>
                   <button title="Delete" onClick={() => handleDeleteNote(note)}><FaTrash className="text-red-400" /></button>
 
                   <button
@@ -195,7 +225,6 @@ const AllNotesPage: React.FC = () => {
             <div
               key={note.id}
               className="flex items-center gap-4 px-4 py-3 cursor-pointer hover:ring-2 ring-blue-200"
-              onClick={() => { setSelectedNote(note); setDetailOpen(true); }}
             >
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
@@ -215,7 +244,7 @@ const AllNotesPage: React.FC = () => {
                 <button title="Share" onClick={() => alert(`Share note: ${note.title}`)}>
                   <FaShareAlt className="text-blue-500 hover:text-blue-700" />
                 </button>
-                <button title="Edit"><FaEdit className="text-blue-400" /></button>
+                <button title="Edit" onClick={() => handleEditNote(note)}><FaEdit className="text-blue-400" /></button>
                 <button title="Delete" onClick={() => handleDeleteNote(note)}><FaTrash className="text-red-400" /></button>
                 <button
                   title="View Details"
@@ -238,11 +267,54 @@ const AllNotesPage: React.FC = () => {
         onClose={() => setModalOpen(false)}
         onCreate={handleCreateNote}
       />
+      <QuickCreateNoteModal
+        open={editModalOpen}
+        onClose={() => {
+          setEditModalOpen(false);
+          setNoteToEdit(null);
+        }}
+        onCreate={handleUpdateNote}
+        initialData={noteToEdit ? {
+          title: noteToEdit.title,
+          content: noteToEdit.content,
+          tags: noteToEdit.tags
+        } : undefined}
+        isEditing={true}
+      />
       <NoteDetailModal
         open={detailOpen}
         note={selectedNote}
         onClose={() => setDetailOpen(false)}
       />
+      
+      {/* Delete Confirmation Modal */}
+      {deleteModalOpen && noteToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+            <h3 className="text-lg font-semibold mb-4">Delete Note</h3>
+            <p className="text-gray-600 mb-6">
+              Are you sure you want to delete "{noteToDelete.title}"? This action cannot be undone.
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                className="px-4 py-2 rounded bg-gray-100 text-gray-700 hover:bg-gray-200"
+                onClick={() => {
+                  setDeleteModalOpen(false);
+                  setNoteToDelete(null);
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700"
+                onClick={confirmDelete}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

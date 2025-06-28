@@ -14,6 +14,9 @@ interface NoteCardProps {
   isStarred?: boolean;
   isShared?: boolean;
   lastEdited?: string;
+  // Selection props
+  checked?: boolean;
+  onCheck?: (id: string) => void;
   // Action handlers
   onPin?: (id: string) => void;
   onFavorite?: (id: string) => void;
@@ -42,6 +45,8 @@ const NoteCard: React.FC<NoteCardProps> = ({
   isStarred,
   isShared,
   lastEdited,
+  checked,
+  onCheck,
   onPin,
   onFavorite,
   onShare,
@@ -56,7 +61,20 @@ const NoteCard: React.FC<NoteCardProps> = ({
   showView = true,
 }) => {
   return (
-    <div className="bg-white rounded-lg shadow p-4 flex flex-col gap-2 min-h-[180px] hover:ring-2 ring-blue-200 cursor-pointer">
+    <div className="bg-white rounded-lg shadow p-4 flex flex-col gap-2 min-h-[180px] hover:ring-2 ring-blue-200 cursor-pointer relative">
+      {onCheck && (
+        <div className="absolute top-2 left-2 z-10">
+          <input
+            type="checkbox"
+            checked={checked || false}
+            onChange={(e) => {
+              e.stopPropagation();
+              onCheck(id);
+            }}
+            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+          />
+        </div>
+      )}
       <div className="flex items-center justify-between mb-1">
         <span className="font-semibold text-lg truncate" title={title}>{title}</span>
         <div className="flex gap-2">

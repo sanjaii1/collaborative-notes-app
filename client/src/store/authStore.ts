@@ -16,7 +16,7 @@ type AuthState = {
   setUser: (user: User) => void;
 };
 
-export const useAuthStore: import("zustand").StoreApi<AuthState> = create<AuthState>()(
+export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
       user: null,

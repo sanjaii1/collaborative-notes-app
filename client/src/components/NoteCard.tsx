@@ -1,5 +1,6 @@
 import React from "react";
 import { FaStar, FaRegStar, FaThumbtack, FaRegShareSquare, FaTrash } from "react-icons/fa";
+import CollaboratorsAvatars from "./CollaboratorsAvatars";
 
 interface NoteCardProps {
   id: string;
@@ -72,12 +73,12 @@ const NoteCard: React.FC<NoteCardProps> = ({
         </div>
       )}
       {collaborators.length > 0 && (
-        <div className="flex -space-x-2 mt-auto">
-          {collaborators.map((c, i) => (
-            <span key={i} className="inline-block w-6 h-6 rounded-full bg-gray-200 text-gray-700 text-xs flex items-center justify-center border-2 border-white" title={c}>
-              {c[0].toUpperCase()}
-            </span>
-          ))}
+        <div className="mt-auto">
+          <CollaboratorsAvatars 
+            collaborators={collaborators} 
+            size="sm"
+            maxDisplay={3}
+          />
         </div>
       )}
     </div>

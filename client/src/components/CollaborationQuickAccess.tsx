@@ -1,20 +1,21 @@
 import React from "react";
 import { FaShareAlt, FaUserCircle } from "react-icons/fa";
+import CollaboratorsAvatars from "./CollaboratorsAvatars";
 
 const mockSharedNotes = [
   {
     id: "1",
     title: "Project Plan",
-    sharedBy: "Alex",
+    sharedBy: "Alex Johnson",
     time: "5 mins ago",
-    collaborators: ["Alex", "You", "Sam"],
+    collaborators: ["Alex Johnson", "You", "Sam Wilson", "David Chen"],
   },
   {
     id: "2",
     title: "Budget 2025",
-    sharedBy: "John",
+    sharedBy: "John Smith",
     time: "1 hour ago",
-    collaborators: ["John", "You"],
+    collaborators: ["John Smith", "You", "Emily Davis"],
   },
 ];
 
@@ -37,13 +38,11 @@ const CollaborationQuickAccess: React.FC = () => {
             </div>
             <div className="flex items-center gap-2 text-xs text-gray-500">
               Shared by {note.sharedBy}
-              <div className="flex -space-x-2 ml-2">
-                {note.collaborators.map((c, i) => (
-                  <span key={i} className="inline-block w-6 h-6 rounded-full bg-gray-200 text-gray-700 flex items-center justify-center border-2 border-white" title={c}>
-                    {c === 'You' ? <FaUserCircle /> : c[0].toUpperCase()}
-                  </span>
-                ))}
-              </div>
+              <CollaboratorsAvatars 
+                collaborators={note.collaborators} 
+                size="sm"
+                maxDisplay={3}
+              />
             </div>
           </li>
         ))}

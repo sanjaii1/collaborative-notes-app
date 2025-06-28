@@ -19,3 +19,8 @@ export const deleteNote = async (id: string): Promise<any> => {
   const res = await api.delete(`/notes/${id}`);
   return res.data;
 };
+
+export const shareNote = async (noteId: string, userIds: string[]): Promise<any> => {
+  const res = await api.post(`/notes/${noteId}/share`, { userIds });
+  return res.data;
+};

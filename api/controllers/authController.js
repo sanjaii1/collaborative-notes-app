@@ -46,6 +46,12 @@ export const loginUser = async (req, res) => {
   });
 };
 
+export const getAllUsers = async (req, res) => {
+  // Exclude the current user from the list
+  const users = await User.find({ _id: { $ne: req.user.id } }).select("_id name email");
+  res.json(users);
+};
+
 // ✅ GET /api/auth/me (Protected)
 export const getMe = async (req, res) => {
   const user = await User.findById(req.user.id).select("-password");

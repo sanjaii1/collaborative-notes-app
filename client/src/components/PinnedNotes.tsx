@@ -7,7 +7,7 @@ const mockPinnedNotes = [
     title: "Project Plan",
     content: "Outline project milestones and deliverables for Q2...",
     tags: ["Work", "Planning"],
-    collaborators: ["Alex", "Sam"],
+    collaborators: ["Alex Johnson", "Sam Wilson", "David Chen"],
   },
   {
     id: "2",
@@ -21,7 +21,7 @@ const mockPinnedNotes = [
     title: "Budget 2025",
     content: "Draft budget for next year, including all departments...",
     tags: ["Finance"],
-    collaborators: ["John"],
+    collaborators: ["John Smith", "Emily Davis"],
   },
 ];
 

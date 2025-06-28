@@ -1,4 +1,5 @@
 import React from "react";
+import CollaboratorsAvatars from "./CollaboratorsAvatars";
 
 interface PinnedNoteCardProps {
   title: string;
@@ -22,12 +23,12 @@ const PinnedNoteCard: React.FC<PinnedNoteCardProps> = ({ title, content, tags, o
           </div>
         )}
         {collaborators && collaborators.length > 0 && (
-          <div className="flex -space-x-2 mb-2">
-            {collaborators.map((c, i) => (
-              <span key={i} className="inline-block w-6 h-6 rounded-full bg-gray-200 text-gray-700 text-xs flex items-center justify-center border-2 border-white" title={c}>
-                {c[0].toUpperCase()}
-              </span>
-            ))}
+          <div className="mb-2">
+            <CollaboratorsAvatars 
+              collaborators={collaborators} 
+              size="sm"
+              maxDisplay={3}
+            />
           </div>
         )}
       </div>

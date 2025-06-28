@@ -2,17 +2,19 @@ import React, { useState, useMemo } from "react";
 import { FaStar, FaRegStar, FaTrash, FaEdit, FaUsers, FaTh, FaBars, FaEye, FaShareAlt } from "react-icons/fa";
 import QuickCreateNoteModal from "../components/QuickCreateNoteModal";
 import NoteDetailModal from "../components/NoteDetailModal";
+import CollaboratorsAvatars from "../components/CollaboratorsAvatars";
 import { useQuery } from "@tanstack/react-query";
 import { fetchNotes ,createNote, updateNote, deleteNote } from "../services/noteApi";
 import { toast } from "react-toastify";
-
+import { fetchUsers } from "../services/userApi";
+import { shareNote as shareNoteApi } from "../services/noteApi";
 
 type Note = {
   id: string;
   title: string;
   content: string;
   tags: string[];
-  collaborators: string[];
+  sharedWith: string[];
   isPinned: boolean;
   isStarred: boolean;
   isFavorite: boolean;
@@ -28,6 +30,7 @@ const sortOptions = [
 ];
 
 const AllNotesPage: React.FC = () => {
+
   const { data: notes = [], isLoading, error, refetch } = useQuery({
     queryKey: ["notes"],
     queryFn: fetchNotes,
@@ -42,6 +45,17 @@ const AllNotesPage: React.FC = () => {
   const [noteToDelete, setNoteToDelete] = useState<Note | null>(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [noteToEdit, setNoteToEdit] = useState<Note | null>(null);
+  const [shareModalOpen, setShareModalOpen] = useState(false);
+  const [noteToShare, setNoteToShare] = useState<Note | null>(null);
+  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
+
+
+  const { data: users = [] } = useQuery({
+    queryKey: ["users"],
+    queryFn: fetchUsers,
+    // enabled: shareModalOpen,
+  });
+
 
   const filteredNotes = useMemo(() => {
     let filtered = [...notes];
@@ -129,6 +143,34 @@ const AllNotesPage: React.FC = () => {
     }
   };
 
+  const handleShareNote = (note: Note) => {
+    setNoteToShare(note);
+    setShareModalOpen(true);
+    setSelectedUsers([]);
+  };
+
+  const handleConfirmShare = async () => {
+    if (!noteToShare || selectedUsers.length === 0) return;
+  
+    try {
+      await shareNoteApi(noteToShare.id, selectedUsers);
+      toast.success(`Note shared with ${selectedUsers.length} user(s)!`);
+      setShareModalOpen(false);
+      setNoteToShare(null);
+      setSelectedUsers([]);
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || "Failed to share note");
+    }
+  };
+
+  const toggleUserSelection = (userId: string) => {
+    setSelectedUsers(prev => 
+      prev.includes(userId) 
+        ? prev.filter(id => id !== userId)
+        : [...prev, userId]
+    );
+  };
+
   return (
     <div>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
@@ -189,7 +231,7 @@ const AllNotesPage: React.FC = () => {
                   <button title="Favorite" onClick={() => handleToggleFavorite(note)}>{note.isStarred ? <FaStar className="text-pink-500" /> : <FaRegStar className="text-gray-400" />}</button>
                   <button
                     title="Share"
-                    onClick={() => alert(`Share note: ${note.title}`)}
+                    onClick={() => handleShareNote(note)}
                   >
                     <FaShareAlt className="text-blue-500 hover:text-blue-700" />
                   </button>
@@ -215,7 +257,16 @@ const AllNotesPage: React.FC = () => {
                   <span key={tag} className="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-full">{tag}</span>
                 ))}
               </div>
-              <div className="text-xs text-gray-400 mt-auto">Last edited: 2024-06-01</div>
+              <div className="flex items-center justify-between mt-auto">
+                <div className="text-xs text-gray-400">Last edited: 2024-06-01</div>
+                {note.sharedWith && note.sharedWith.length > 0 && (
+                  <CollaboratorsAvatars 
+                    collaborators={note.sharedWith} 
+                    size="sm"
+                    maxDisplay={3}
+                  />
+                )}
+              </div>
             </div>
           ))}
         </div>
@@ -238,10 +289,20 @@ const AllNotesPage: React.FC = () => {
                     <span key={tag} className="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-full">{tag}</span>
                   ))}
                 </div>
+                {note.sharedWith && note.sharedWith.length > 0 && (
+                  <div className="flex items-center gap-2 mt-2">
+                    <span className="text-xs text-gray-500">Collaborators:</span>
+                    <CollaboratorsAvatars 
+                      collaborators={note.sharedWith} 
+                      size="sm"
+                      maxDisplay={3}
+                    />
+                  </div>
+                )}
               </div>
               <div className="flex gap-2 items-center">
                 <button title="Favorite" onClick={() => handleToggleFavorite(note)}>{note.isStarred ? <FaStar className="text-pink-500" /> : <FaRegStar className="text-gray-400" />}</button>
-                <button title="Share" onClick={() => alert(`Share note: ${note.title}`)}>
+                <button title="Share" onClick={() => handleShareNote(note)}>
                   <FaShareAlt className="text-blue-500 hover:text-blue-700" />
                 </button>
                 <button title="Edit" onClick={() => handleEditNote(note)}><FaEdit className="text-blue-400" /></button>
@@ -289,7 +350,7 @@ const AllNotesPage: React.FC = () => {
       
       {/* Delete Confirmation Modal */}
       {deleteModalOpen && noteToDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm overflow-hidden">
           <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
             <h3 className="text-lg font-semibold mb-4">Delete Note</h3>
             <p className="text-gray-600 mb-6">
@@ -310,6 +371,52 @@ const AllNotesPage: React.FC = () => {
                 onClick={confirmDelete}
               >
                 Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Share Modal */}
+      {shareModalOpen && noteToShare && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm overflow-hidden">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md max-h-96 overflow-y-auto">
+            <h3 className="text-lg font-semibold mb-4">Share Note</h3>
+            <p className="text-gray-600 mb-4">
+              Share "{noteToShare.title}" with:
+            </p>
+            <div className="space-y-2 mb-6 max-h-48 overflow-y-auto">
+              {users.map(user => (
+                <label key={user.id} className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={selectedUsers.includes(user.id)}
+                    onChange={() => toggleUserSelection(user.id)}
+                    className="rounded"
+                  />
+                  <div>
+                    <div className="font-medium">{user.name}</div>
+                    <div className="text-sm text-gray-500">{user.email}</div>
+                  </div>
+                </label>
+              ))}
+            </div>
+            <div className="flex justify-end gap-3">
+              <button
+                className="px-4 py-2 rounded bg-gray-100 text-gray-700 hover:bg-gray-200"
+                onClick={() => {
+                  setShareModalOpen(false);
+                  setNoteToShare(null);
+                  setSelectedUsers([]);
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                onClick={handleConfirmShare}
+                disabled={selectedUsers.length === 0}
+              >
+                Share ({selectedUsers.length})
               </button>
             </div>
           </div>

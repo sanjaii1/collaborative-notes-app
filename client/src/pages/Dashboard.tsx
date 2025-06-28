@@ -64,6 +64,17 @@ export default function Dashboard(): React.JSX.Element {
     }
   };
 
+  // Add this function to handle toggling favorite/starred status
+  const handleToggleFavorite = async (noteId: string, isStarred: boolean) => {
+    try {
+      await updateNote(noteId, { isStarred: !isStarred });
+      toast.success(`Note ${!isStarred ? "starred" : "unstarred"}!`);
+      refetch();
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || "Failed to update note");
+    }
+  };
+
   // Filter starred and shared notes from the real data
   const starredNotes = notes.filter((note: any) => note.isStarred === true);
   const sharedNotes = notes.filter((note: any) => note.sharedWith && note.sharedWith.length > 0);
@@ -122,9 +133,15 @@ export default function Dashboard(): React.JSX.Element {
                     sharedWith={note.sharedWith}
                     getUserNames={getUserNamesFromIds}
                     isPinned={note.isPinned}
-                    isFavorite={note.isFavorite}
+                    isStarred={note.isStarred}
                     isShared={note.sharedWith && note.sharedWith.length > 0}
-                    // Add more handlers as needed
+                    lastEdited={note.updatedAt ? new Date(note.updatedAt).toISOString().split('T')[0] : undefined}
+                    onFavorite={() => handleToggleFavorite(note.id, note.isStarred)}
+                    // Optionally add onPin, onShare, onDelete, onEdit, onView handlers as needed
+                    showEdit={false}
+                    showDelete={false}
+                    showView={false}
+                    showPin={false}
                   />
                 </div>
               ))}
@@ -149,9 +166,13 @@ export default function Dashboard(): React.JSX.Element {
                     sharedWith={note.sharedWith}
                     getUserNames={getUserNamesFromIds}
                     isPinned={note.isPinned}
-                    isFavorite={note.isFavorite}
+                    isStarred={note.isStarred}
                     isShared={note.sharedWith && note.sharedWith.length > 0}
-                    // Add more handlers as needed
+                    lastEdited={note.updatedAt ? new Date(note.updatedAt).toISOString().split('T')[0] : undefined}
+                    showEdit={false}
+                    showDelete={false}
+                    showView={false}
+                    showPin={false}
                   />
                 </div>
               ))}

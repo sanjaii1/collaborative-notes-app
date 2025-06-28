@@ -1,5 +1,5 @@
 import React from "react";
-import { FaStar, FaRegStar, FaThumbtack, FaRegShareSquare, FaTrash } from "react-icons/fa";
+import { FaStar, FaRegStar, FaThumbtack, FaRegShareSquare, FaTrash, FaEdit, FaUsers, FaEye, FaShareAlt } from "react-icons/fa";
 import CollaboratorsAvatars from "./CollaboratorsAvatars";
 
 interface NoteCardProps {
@@ -11,13 +11,23 @@ interface NoteCardProps {
   getUserNames?: (userIds: string[]) => string[];
   isPinned?: boolean;
   isFavorite?: boolean;
+  isStarred?: boolean;
   isShared?: boolean;
-  checked?: boolean;
-  onCheck?: (id: string) => void;
+  lastEdited?: string;
+  // Action handlers
   onPin?: (id: string) => void;
   onFavorite?: (id: string) => void;
   onShare?: (id: string) => void;
   onDelete?: (id: string) => void;
+  onEdit?: (id: string) => void;
+  onView?: (id: string) => void;
+  // Control which buttons to show
+  showPin?: boolean;
+  showFavorite?: boolean;
+  showShare?: boolean;
+  showDelete?: boolean;
+  showEdit?: boolean;
+  showView?: boolean;
 }
 
 const NoteCard: React.FC<NoteCardProps> = ({
@@ -29,60 +39,67 @@ const NoteCard: React.FC<NoteCardProps> = ({
   getUserNames,
   isPinned,
   isFavorite,
+  isStarred,
   isShared,
-  checked,
-  onCheck,
+  lastEdited,
   onPin,
   onFavorite,
   onShare,
   onDelete,
+  onEdit,
+  onView,
+  showPin = true,
+  showFavorite = true,
+  showShare = true,
+  showDelete = true,
+  showEdit = true,
+  showView = true,
 }) => {
   return (
-    <div className="bg-white rounded-lg shadow p-4 flex flex-col relative min-h-[180px]">
-      <div className="flex items-start justify-between mb-2">
-        <div className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            checked={checked}
-            onChange={() => onCheck && onCheck(id)}
-            className="accent-blue-500"
-          />
-          <h3 className="font-semibold text-lg truncate" title={title}>{title}</h3>
-          {isPinned && <FaThumbtack className="text-yellow-500 ml-1" title="Pinned" />}
-          {isShared && <FaRegShareSquare className="text-green-500 ml-1" title="Shared" />}
-        </div>
+    <div className="bg-white rounded-lg shadow p-4 flex flex-col gap-2 min-h-[180px] hover:ring-2 ring-blue-200 cursor-pointer">
+      <div className="flex items-center justify-between mb-1">
+        <span className="font-semibold text-lg truncate" title={title}>{title}</span>
         <div className="flex gap-2">
-          <button onClick={() => onPin && onPin(id)} title="Pin/Unpin">
-            <FaThumbtack className={isPinned ? "text-yellow-500" : "text-gray-400"} />
-          </button>
-          <button onClick={() => onFavorite && onFavorite(id)} title="Favorite">
-            {isFavorite ? <FaStar className="text-pink-500" /> : <FaRegStar className="text-gray-400" />}
-          </button>
-          <button onClick={() => onShare && onShare(id)} title="Share">
-            <FaRegShareSquare className="text-blue-400" />
-          </button>
-          <button onClick={() => onDelete && onDelete(id)} title="Delete">
-            <FaTrash className="text-red-400" />
-          </button>
+          {showFavorite && (
+            <button title="Favorite" onClick={e => { e.stopPropagation(); onFavorite && onFavorite(id); }}>
+              {isStarred ? <FaStar className="text-pink-500" /> : <FaRegStar className="text-gray-400" />}
+            </button>
+          )}
+          {showShare && (
+            <button title="Share" onClick={e => { e.stopPropagation(); onShare && onShare(id); }}>
+              <FaShareAlt className="text-blue-500 hover:text-blue-700" />
+            </button>
+          )}
+          {isShared && <FaUsers className="text-green-500" title="Shared" />}
+          {showEdit && (
+            <button title="Edit" onClick={e => { e.stopPropagation(); onEdit && onEdit(id); }}><FaEdit className="text-blue-400" /></button>
+          )}
+          {showDelete && (
+            <button title="Delete" onClick={e => { e.stopPropagation(); onDelete && onDelete(id); }}><FaTrash className="text-red-400" /></button>
+          )}
+          {showView && (
+            <button title="View Details" onClick={e => { e.stopPropagation(); onView && onView(id); }}>
+              <FaEye className="text-gray-500 hover:text-blue-500" />
+            </button>
+          )}
         </div>
       </div>
-      <p className="text-gray-600 text-sm mb-2 line-clamp-2">{content}</p>
-      {tags.length > 0 && (
-        <div className="flex flex-wrap gap-1 mb-2">
-          {tags.map((tag) => (
-            <span key={tag} className="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-full">{tag}</span>
-          ))}
-        </div>
-      )}
-      {sharedWith.length > 0 && getUserNames && (
-        <div className="mt-auto">
+      <div className="text-gray-600 text-sm line-clamp-2 mb-1">{content}</div>
+      <div className="flex flex-wrap gap-1 mb-1">
+        {tags.map(tag => (
+          <span key={tag} className="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-full">{tag}</span>
+        ))}
+      </div>
+      <div className="flex items-center justify-between mt-auto">
+        <div className="text-xs text-gray-400">Last edited: {lastEdited || "-"}</div>
+        {sharedWith.length > 0 && getUserNames && (
           <CollaboratorsAvatars 
             collaborators={getUserNames(sharedWith)} 
             size="sm"
             maxDisplay={3}
           />
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

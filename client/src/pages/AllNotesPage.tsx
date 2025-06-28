@@ -1,9 +1,9 @@
 import React, { useState, useMemo } from "react";
-import { FaStar, FaRegStar, FaTrash, FaEdit, FaUsers, FaTh, FaBars, FaEye } from "react-icons/fa";
+import { FaStar, FaRegStar, FaTrash, FaEdit, FaUsers, FaTh, FaBars, FaEye, FaShareAlt } from "react-icons/fa";
 import QuickCreateNoteModal from "../components/QuickCreateNoteModal";
 import NoteDetailModal from "../components/NoteDetailModal";
 import { useQuery } from "@tanstack/react-query";
-import { fetchNotes ,createNote} from "../services/noteApi";
+import { fetchNotes ,createNote, updateNote, deleteNote } from "../services/noteApi";
 import { toast } from "react-toastify";
 
 
@@ -14,6 +14,7 @@ type Note = {
   tags: string[];
   collaborators: string[];
   isPinned: boolean;
+  isStarred: boolean;
   isFavorite: boolean;
   isShared: boolean;
 };
@@ -57,7 +58,7 @@ const AllNotesPage: React.FC = () => {
         filtered.sort((a, b) => b.title.localeCompare(a.title));
         break;
       case "favorites":
-        filtered.sort((a, b) => (b.isFavorite ? 1 : 0) - (a.isFavorite ? 1 : 0));
+        filtered.sort((a, b) => (b.isStarred ? 1 : 0) - (a.isStarred ? 1 : 0));
         break;
       // Add more sort logic as needed
       default:
@@ -73,6 +74,28 @@ const AllNotesPage: React.FC = () => {
       refetch()
     } catch (err: any) {
       toast.error(err.response?.data?.message || "Failed to create note");
+    }
+  };
+
+  const handleToggleFavorite = async (note: Note) => {
+    try {
+      await updateNote(note.id, { isStarred: !note.isStarred });
+      toast.success(`Note ${!note.isStarred ? "starred" : "unstarred"}!`);
+      refetch();
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || "Failed to update note");
+    }
+  };
+
+  const handleDeleteNote = async (note: Note) => {
+    if (window.confirm(`Are you sure you want to delete "${note.title}"?`)) {
+      try {
+        await deleteNote(note.id);
+        toast.success("Note deleted!");
+        refetch();
+      } catch (err: any) {
+        toast.error(err.response?.data?.message || "Failed to delete note");
+      }
     }
   };
 
@@ -133,10 +156,17 @@ const AllNotesPage: React.FC = () => {
               <div className="flex items-center justify-between mb-1">
                 <span className="font-semibold text-lg truncate" title={note.title}>{note.title}</span>
                 <div className="flex gap-2">
-                  <button title="Favorite">{note.isFavorite ? <FaStar className="text-pink-500" /> : <FaRegStar className="text-gray-400" />}</button>
-                  <button title="Edit"><FaEdit className="text-blue-400" /></button>
-                  <button title="Delete"><FaTrash className="text-red-400" /></button>
+                  <button title="Favorite" onClick={() => handleToggleFavorite(note)}>{note.isStarred ? <FaStar className="text-pink-500" /> : <FaRegStar className="text-gray-400" />}</button>
+                  <button
+                    title="Share"
+                    onClick={() => alert(`Share note: ${note.title}`)}
+                  >
+                    <FaShareAlt className="text-blue-500 hover:text-blue-700" />
+                  </button>
                   {note.isShared && <FaUsers className="text-green-500" title="Shared" />}
+                  <button title="Edit"><FaEdit className="text-blue-400" /></button>
+                  <button title="Delete" onClick={() => handleDeleteNote(note)}><FaTrash className="text-red-400" /></button>
+
                   <button
                     title="View Details"
                     onClick={(e) => {
@@ -171,7 +201,7 @@ const AllNotesPage: React.FC = () => {
                 <div className="flex items-center gap-2">
                   <span className="font-semibold truncate" title={note.title}>{note.title}</span>
                   {note.isShared && <FaUsers className="text-green-500" title="Shared" />}
-                  {note.isFavorite && <FaStar className="text-pink-500" />}
+                  {note.isStarred && <FaStar className="text-pink-500" />}
                 </div>
                 <div className="text-gray-600 text-sm truncate">{note.content}</div>
                 <div className="flex flex-wrap gap-1 mt-1">
@@ -181,8 +211,12 @@ const AllNotesPage: React.FC = () => {
                 </div>
               </div>
               <div className="flex gap-2 items-center">
+                <button title="Favorite" onClick={() => handleToggleFavorite(note)}>{note.isStarred ? <FaStar className="text-pink-500" /> : <FaRegStar className="text-gray-400" />}</button>
+                <button title="Share" onClick={() => alert(`Share note: ${note.title}`)}>
+                  <FaShareAlt className="text-blue-500 hover:text-blue-700" />
+                </button>
                 <button title="Edit"><FaEdit className="text-blue-400" /></button>
-                <button title="Delete"><FaTrash className="text-red-400" /></button>
+                <button title="Delete" onClick={() => handleDeleteNote(note)}><FaTrash className="text-red-400" /></button>
                 <button
                   title="View Details"
                   onClick={(e) => {

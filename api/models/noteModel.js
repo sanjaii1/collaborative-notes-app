@@ -27,8 +27,17 @@ const noteSchema = new mongoose.Schema(
         ref: "User",
       },
     ],
+    id: {
+      type: String,
+      default: function() {
+        return this._id.toString();
+      }
+    },
+    
   },
   { timestamps: true }
 );
 
+
 export const Note = mongoose.model("Note", noteSchema);
+ 

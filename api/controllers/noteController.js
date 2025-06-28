@@ -1,5 +1,5 @@
 // api/controllers/noteController.js
-import { Note } from "../models/noteModel.js";
+import {Note} from "../models/noteModel.js";
 
 export const getNotes = async (req, res) => {
   const notes = await Note.find({ user: req.user.id }).sort({ updatedAt: -1 });
@@ -15,13 +15,16 @@ export const createNote = async (req, res) => {
 };
 
 export const updateNote = async (req, res) => {
-  const { title, content } = req.body;
   const note = await Note.findById(req.params.id);
 
   if (!note || note.user.toString() !== req.user.id) return res.status(404).json({ message: "Not found" });
 
-  note.title = title;
-  note.content = content;
+  Object.keys(req.body).forEach(key => {
+    if (note.schema.paths[key]) {
+      note[key] = req.body[key];
+    }
+  });
+  
   await note.save();
 
   res.json(note);
@@ -31,6 +34,6 @@ export const deleteNote = async (req, res) => {
   const note = await Note.findById(req.params.id);
   if (!note || note.user.toString() !== req.user.id) return res.status(404).json({ message: "Not found" });
 
-  await note.remove();
+  await Note.deleteOne({ _id: req.params.id });
   res.json({ message: "Note deleted" });
 };

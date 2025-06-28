@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function LogoHeader() {
+export default function LogoHeader(): React.JSX.Element {
   return (
     <div className="flex flex-col items-center mb-6">
       <div className="flex items-center justify-center">

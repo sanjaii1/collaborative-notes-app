@@ -20,6 +20,7 @@ export default function ForgotPassword(): React.JSX.Element {
 
   const onSubmit = async (data: ForgotPasswordForm) => {
     // Here you would call your API to send the reset link
+    console.log(data)
     setSubmitted(true);
   };
 

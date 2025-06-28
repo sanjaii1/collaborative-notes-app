@@ -20,7 +20,7 @@ interface NotesListProps {
 
 const NotesList: React.FC<NotesListProps> = ({ getUserNames }) => {
   const [selected, setSelected] = useState<string[]>([]);
-  const { data: notes, isLoading, error, refetch } = useQuery({
+  const { data: notes, isLoading, error } = useQuery({
     queryKey: ["notes"],
     queryFn: fetchNotes,
   });

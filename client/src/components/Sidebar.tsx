@@ -1,6 +1,5 @@
 import React from "react";
 import { FaRegStickyNote, FaShareAlt, FaStar, FaTrash, FaTags, FaChartBar } from "react-icons/fa";
-import TagManager from "./TagManager";
 import TrashBinModal from "./TrashBinModal";
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -43,13 +42,13 @@ const Sidebar: React.FC = () => {
                 <button
                     className="w-full py-2 rounded bg-blue-500 text-white text-sm hover:bg-blue-600 mb-2"
                     onClick={() => {
-                        // Mock logout handler
+                       
                         window.location.href = "/login";
                     }}
                 >
                     Logout
                 </button>
-                <span className="text-gray-400 text-sm">&copy; 2024</span>
+                <span className="text-gray-400 text-sm">&copy; SANJAI</span>
                 <TrashBinModal open={trashOpen} onClose={() => setTrashOpen(false)} />
             </div>
         </aside>

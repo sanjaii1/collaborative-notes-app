@@ -1,8 +1,8 @@
 // import Sidebar from "../components/Sidebar";
 import OverviewWidgets from "../components/OverviewWidgets";
-import PinnedNotes from "../components/PinnedNotes";
+// import PinnedNotes from "../components/PinnedNotes";
 // import NotesToolbar from "../components/NotesToolbar";
-import NotesList from "../components/NotesList";
+// import NotesList from "../components/NotesList";
 import QuickCreateNoteModal from "../components/QuickCreateNoteModal";
 // import RecentActivityFeed from "../components/RecentActivityFeed";
 // import CollaborationQuickAccess from "../components/CollaborationQuickAccess";
@@ -14,7 +14,7 @@ import {
   fetchNotes,
   createNote,
   updateNote,
-  deleteNote
+  // deleteNote
 } from "../services/noteApi";
 import { useState } from "react";
 import NoteCard from "../components/NoteCard";
@@ -54,15 +54,15 @@ export default function Dashboard(): React.JSX.Element {
     }
   };
 
-  const handleTogglePin = async (noteId: string, isPinned: boolean) => {
-    try {
-      await updateNote(noteId, { isPinned: !isPinned });
-      toast.success(`Note ${!isPinned ? 'pinned' : 'unpinned'}!`);
-      refetch(); // Refetch notes after updating
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || "Failed to update note");
-    }
-  };
+  // const handleTogglePin = async (noteId: string, isPinned: boolean) => {
+  //   try {
+  //     await updateNote(noteId, { isPinned: !isPinned });
+  //     toast.success(`Note ${!isPinned ? 'pinned' : 'unpinned'}!`);
+  //     refetch(); // Refetch notes after updating
+  //   } catch (err: any) {
+  //     toast.error(err.response?.data?.message || "Failed to update note");
+  //   }
+  // };
 
   // Add this function to handle toggling favorite/starred status
   const handleToggleFavorite = async (noteId: string, isStarred: boolean) => {

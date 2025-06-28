@@ -1,5 +1,5 @@
 import React from "react";
-import { FaStar, FaRegStar, FaThumbtack, FaRegShareSquare, FaTrash, FaEdit, FaUsers, FaEye, FaShareAlt } from "react-icons/fa";
+import { FaStar, FaRegStar, FaTrash, FaEdit, FaUsers, FaEye, FaShareAlt } from "react-icons/fa";
 import CollaboratorsAvatars from "./CollaboratorsAvatars";
 
 interface NoteCardProps {
@@ -40,8 +40,7 @@ const NoteCard: React.FC<NoteCardProps> = ({
   tags = [],
   sharedWith = [],
   getUserNames,
-  isPinned,
-  isFavorite,
+
   isStarred,
   isShared,
   lastEdited,
@@ -53,7 +52,6 @@ const NoteCard: React.FC<NoteCardProps> = ({
   onDelete,
   onEdit,
   onView,
-  showPin = true,
   showFavorite = true,
   showShare = true,
   showDelete = true,

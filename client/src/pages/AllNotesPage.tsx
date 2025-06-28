@@ -33,7 +33,7 @@ const sortOptions = [
 
 const AllNotesPage: React.FC = () => {
 
-  const { data: notes = [], isLoading, error, refetch } = useQuery({
+  const { data: notes = [], refetch } = useQuery({
     queryKey: ["notes"],
     queryFn: fetchNotes,
   });
@@ -67,10 +67,10 @@ const AllNotesPage: React.FC = () => {
   };
 
   // Function to get current user's name
-  const getCurrentUserName = (): string => {
-    const currentUser = useAuthStore.getState().user;
-    return currentUser?.name || 'You';
-  };
+  // const getCurrentUserName = (): string => {
+  //   const currentUser = useAuthStore.getState().user;
+  //   return currentUser?.name || 'You';
+  // };
 
   const filteredNotes = useMemo(() => {
     let filtered = [...notes];

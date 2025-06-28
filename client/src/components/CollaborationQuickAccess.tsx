@@ -1,5 +1,5 @@
 import React from "react";
-import { FaShareAlt, FaUserCircle } from "react-icons/fa";
+import { FaShareAlt } from "react-icons/fa";
 import CollaboratorsAvatars from "./CollaboratorsAvatars";
 
 interface CollaborationQuickAccessProps {

@@ -1,38 +1,40 @@
 import React, { useState } from "react";
-import PinnedNoteCard from "./PinnedNoteCard";
+import NoteCard from "./NoteCard";
 
-const mockPinnedNotes = [
-  {
-    id: "1",
-    title: "Project Plan",
-    content: "Outline project milestones and deliverables for Q2...",
-    tags: ["Work", "Planning"],
-    collaborators: ["Alex Johnson", "Sam Wilson", "David Chen"],
-  },
-  {
-    id: "2",
-    title: "Grocery List",
-    content: "Eggs, milk, bread, and more for the week...",
-    tags: ["Personal"],
-    collaborators: [],
-  },
-  {
-    id: "3",
-    title: "Budget 2025",
-    content: "Draft budget for next year, including all departments...",
-    tags: ["Finance"],
-    collaborators: ["John Smith", "Emily Davis"],
-  },
-];
+interface Note {
+  id: string;
+  title: string;
+  content: string;
+  tags: string[];
+  sharedWith: string[];
+  isPinned?: boolean;
+  isFavorite?: boolean;
+  isShared?: boolean;
+}
 
-const PinnedNotes: React.FC = () => {
-  const [pinned, setPinned] = useState(mockPinnedNotes);
+interface PinnedNotesProps {
+  notes: Note[];
+  getUserNames?: (userIds: string[]) => string[];
+  onTogglePin?: (noteId: string, isPinned: boolean) => Promise<void>;
+}
 
-  const handleUnpin = (id: string) => {
-    setPinned((prev) => prev.filter((note) => note.id !== id));
+const PinnedNotes: React.FC<PinnedNotesProps> = ({ notes, getUserNames, onTogglePin }) => {
+  const [pinned, setPinned] = useState(notes || []);
+
+  // Update pinned notes when notes prop changes
+  React.useEffect(() => {
+    setPinned(notes || []);
+  }, [notes]);
+
+  const handleUnpin = async (id: string) => {
+    if (onTogglePin) {
+      await onTogglePin(id, true); // true means it's currently pinned, so we're unpinning it
+    } else {
+      setPinned((prev) => prev.filter((note) => note.id !== id));
+    }
   };
 
-  if (pinned.length === 0) {
+  if (!pinned || pinned.length === 0) {
     return (
       <div className="mb-8 text-center text-gray-400 italic">No pinned notes yet. Pin important notes to see them here!</div>
     );
@@ -43,14 +45,20 @@ const PinnedNotes: React.FC = () => {
       <h3 className="text-lg font-semibold mb-3 text-gray-700">Pinned Notes</h3>
       <div className="flex space-x-4 overflow-x-auto pb-2">
         {pinned.map((note) => (
-          <PinnedNoteCard
-            key={note.id}
-            title={note.title}
-            content={note.content}
-            tags={note.tags}
-            collaborators={note.collaborators}
-            onUnpin={() => handleUnpin(note.id)}
-          />
+          <div key={note.id} className="min-w-[300px] max-w-xs">
+            <NoteCard
+              id={note.id}
+              title={note.title}
+              content={note.content}
+              tags={note.tags}
+              sharedWith={note.sharedWith}
+              getUserNames={getUserNames}
+              isPinned={note.isPinned}
+              isFavorite={note.isFavorite}
+              isShared={note.isShared}
+              onPin={() => handleUnpin(note.id)}
+            />
+          </div>
         ))}
       </div>
     </div>

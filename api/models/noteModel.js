@@ -20,6 +20,10 @@ const noteSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    isPinned: {
+      type: Boolean,
+      default: false,
+    },
     tags: [String],
     sharedWith: [
       {

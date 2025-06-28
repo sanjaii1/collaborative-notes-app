@@ -2,48 +2,60 @@ import React from "react";
 import OverviewWidget from "./OverviewWidget";
 import { FaRegStickyNote, FaClock, FaShareAlt, FaStar, FaTrash } from "react-icons/fa";
 
-const mockData = [
-  {
-    label: "Total Notes",
-    count: 42,
-    icon: <FaRegStickyNote />,
-    color: "bg-blue-500",
-    link: "/notes",
-  },
-  {
-    label: "Recently Edited",
-    count: 5,
-    icon: <FaClock />,
-    color: "bg-yellow-500",
-    link: "/notes?sort=recent",
-  },
-  {
-    label: "Shared With Me",
-    count: 8,
-    icon: <FaShareAlt />,
-    color: "bg-green-500",
-    link: "/shared",
-  },
-  {
-    label: "Favorites",
-    count: 12,
-    icon: <FaStar />,
-    color: "bg-pink-500",
-    link: "/favorites",
-  },
-  {
-    label: "Trash",
-    count: 3,
-    icon: <FaTrash />,
-    color: "bg-gray-500",
-    link: "/trash",
-  },
-];
+interface OverviewStats {
+  totalNotes: number;
+  recentlyEdited: number;
+  sharedWithMe: number;
+  favorites: number;
+  trash: number;
+}
 
-const OverviewWidgets: React.FC = () => {
+interface OverviewWidgetsProps {
+  stats: OverviewStats;
+}
+
+const OverviewWidgets: React.FC<OverviewWidgetsProps> = ({ stats }) => {
+  const widgetData = [
+    {
+      label: "Total Notes",
+      count: stats.totalNotes,
+      icon: <FaRegStickyNote />,
+      color: "bg-blue-500",
+      link: "/notes",
+    },
+    {
+      label: "Recently Edited",
+      count: stats.recentlyEdited,
+      icon: <FaClock />,
+      color: "bg-yellow-500",
+      link: "/notes?sort=recent",
+    },
+    {
+      label: "Shared With Me",
+      count: stats.sharedWithMe,
+      icon: <FaShareAlt />,
+      color: "bg-green-500",
+      link: "/shared",
+    },
+    {
+      label: "Favorites",
+      count: stats.favorites,
+      icon: <FaStar />,
+      color: "bg-pink-500",
+      link: "/favorites",
+    },
+    {
+      label: "Trash",
+      count: stats.trash,
+      icon: <FaTrash />,
+      color: "bg-gray-500",
+      link: "/trash",
+    },
+  ];
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-8">
-      {mockData.map((item) => (
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-2">
+      {widgetData.map((item) => (
         <OverviewWidget
           key={item.label}
           icon={item.icon}

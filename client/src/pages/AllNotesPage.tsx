@@ -8,6 +8,8 @@ import { fetchNotes ,createNote, updateNote, deleteNote } from "../services/note
 import { toast } from "react-toastify";
 import { fetchUsers } from "../services/userApi";
 import { shareNote as shareNoteApi } from "../services/noteApi";
+import { useAuthStore } from "../store/authStore";
+import UserInitials from "../components/UserInitials";
 
 type Note = {
   id: string;
@@ -53,9 +55,22 @@ const AllNotesPage: React.FC = () => {
   const { data: users = [] } = useQuery({
     queryKey: ["users"],
     queryFn: fetchUsers,
-    // enabled: shareModalOpen,
+    enabled: true,
   });
 
+  // Function to map user IDs to user names
+  const getUserNamesFromIds = (userIds: string[]): string[] => {
+    return userIds.map(id => {
+      const user = users.find(u => u.id === id);
+      return user ? user.name : 'Unknown User';
+    });
+  };
+
+  // Function to get current user's name
+  const getCurrentUserName = (): string => {
+    const currentUser = useAuthStore.getState().user;
+    return currentUser?.name || 'You';
+  };
 
   const filteredNotes = useMemo(() => {
     let filtered = [...notes];
@@ -164,6 +179,11 @@ const AllNotesPage: React.FC = () => {
   };
 
   const toggleUserSelection = (userId: string) => {
+    // Don't allow selecting the current user
+    if (userId === useAuthStore.getState().user?.id) {
+      return;
+    }
+    
     setSelectedUsers(prev => 
       prev.includes(userId) 
         ? prev.filter(id => id !== userId)
@@ -261,7 +281,7 @@ const AllNotesPage: React.FC = () => {
                 <div className="text-xs text-gray-400">Last edited: 2024-06-01</div>
                 {note.sharedWith && note.sharedWith.length > 0 && (
                   <CollaboratorsAvatars 
-                    collaborators={note.sharedWith} 
+                    collaborators={getUserNamesFromIds(note.sharedWith)} 
                     size="sm"
                     maxDisplay={3}
                   />
@@ -293,7 +313,7 @@ const AllNotesPage: React.FC = () => {
                   <div className="flex items-center gap-2 mt-2">
                     <span className="text-xs text-gray-500">Collaborators:</span>
                     <CollaboratorsAvatars 
-                      collaborators={note.sharedWith} 
+                      collaborators={getUserNamesFromIds(note.sharedWith)} 
                       size="sm"
                       maxDisplay={3}
                     />
@@ -385,20 +405,35 @@ const AllNotesPage: React.FC = () => {
               Share "{noteToShare.title}" with:
             </p>
             <div className="space-y-2 mb-6 max-h-48 overflow-y-auto">
-              {users.map(user => (
-                <label key={user.id} className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={selectedUsers.includes(user.id)}
-                    onChange={() => toggleUserSelection(user.id)}
-                    className="rounded"
-                  />
-                  <div>
-                    <div className="font-medium">{user.name}</div>
-                    <div className="text-sm text-gray-500">{user.email}</div>
-                  </div>
-                </label>
-              ))}
+              {users.map(user => {
+                const isCurrentUser = user.id === useAuthStore.getState().user?.id;
+                return (
+                  <label key={user.id} className={`flex items-center gap-3 p-2 rounded cursor-pointer ${isCurrentUser ? 'bg-gray-50 opacity-60' : 'hover:bg-gray-50'}`}>
+                    <input
+                      type="checkbox"
+                      checked={selectedUsers.includes(user.id)}
+                      onChange={() => toggleUserSelection(user.id)}
+                      className="rounded"
+                      disabled={isCurrentUser}
+                    />
+                    <div className="flex items-center gap-2">
+                      <UserInitials name={user.name} size="sm" />
+                      <div>
+                        <div className="font-medium flex items-center gap-2">
+                          {user.name}
+                          {isCurrentUser && (
+                            <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">You</span>
+                          )}
+                        </div>
+                        <div className="text-sm text-gray-500">{user.email}</div>
+                        {isCurrentUser && (
+                          <div className="text-xs text-gray-400 mt-1">Cannot share with yourself</div>
+                        )}
+                      </div>
+                    </div>
+                  </label>
+                );
+              })}
             </div>
             <div className="flex justify-end gap-3">
               <button

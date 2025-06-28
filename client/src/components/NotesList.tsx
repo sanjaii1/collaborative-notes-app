@@ -8,13 +8,17 @@ type Note = {
   title: string;
   content: string;
   tags: string[];
-  collaborators: string[];
+  sharedWith: string[];
   isPinned: boolean;
   isFavorite: boolean;
   isShared: boolean;
 };
 
-const NotesList: React.FC = () => {
+interface NotesListProps {
+  getUserNames?: (userIds: string[]) => string[];
+}
+
+const NotesList: React.FC<NotesListProps> = ({ getUserNames }) => {
   const [selected, setSelected] = useState<string[]>([]);
   const { data: notes, isLoading, error, refetch } = useQuery({
     queryKey: ["notes"],
@@ -60,6 +64,7 @@ const NotesList: React.FC = () => {
           <NoteCard
             key={note.id}
             {...note}
+            getUserNames={getUserNames}
             checked={selected.includes(note.id)}
             onCheck={handleCheck}
             onPin={() => alert(`Pin/unpin note ${note.id}`)}

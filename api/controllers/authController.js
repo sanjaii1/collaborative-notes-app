@@ -47,8 +47,7 @@ export const loginUser = async (req, res) => {
 };
 
 export const getAllUsers = async (req, res) => {
-  // Exclude the current user from the list
-  const users = await User.find({ _id: { $ne: req.user.id } }).select("_id name email");
+  const users = await User.find().select("_id name email");
   res.json(users);
 };
 

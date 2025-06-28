@@ -7,7 +7,8 @@ interface NoteCardProps {
   title: string;
   content: string;
   tags?: string[];
-  collaborators?: string[];
+  sharedWith?: string[];
+  getUserNames?: (userIds: string[]) => string[];
   isPinned?: boolean;
   isFavorite?: boolean;
   isShared?: boolean;
@@ -24,7 +25,8 @@ const NoteCard: React.FC<NoteCardProps> = ({
   title,
   content,
   tags = [],
-  collaborators = [],
+  sharedWith = [],
+  getUserNames,
   isPinned,
   isFavorite,
   isShared,
@@ -72,10 +74,10 @@ const NoteCard: React.FC<NoteCardProps> = ({
           ))}
         </div>
       )}
-      {collaborators.length > 0 && (
+      {sharedWith.length > 0 && getUserNames && (
         <div className="mt-auto">
           <CollaboratorsAvatars 
-            collaborators={collaborators} 
+            collaborators={getUserNames(sharedWith)} 
             size="sm"
             maxDisplay={3}
           />

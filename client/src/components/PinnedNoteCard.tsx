@@ -6,10 +6,11 @@ interface PinnedNoteCardProps {
   content: string;
   tags?: string[];
   onUnpin: () => void;
-  collaborators?: string[];
+  sharedWith?: string[];
+  getUserNames?: (userIds: string[]) => string[];
 }
 
-const PinnedNoteCard: React.FC<PinnedNoteCardProps> = ({ title, content, tags, onUnpin, collaborators }) => {
+const PinnedNoteCard: React.FC<PinnedNoteCardProps> = ({ title, content, tags, onUnpin, sharedWith, getUserNames }) => {
   return (
     <div className="bg-white rounded-lg shadow p-4 w-64 flex flex-col justify-between">
       <div>
@@ -22,10 +23,10 @@ const PinnedNoteCard: React.FC<PinnedNoteCardProps> = ({ title, content, tags, o
             ))}
           </div>
         )}
-        {collaborators && collaborators.length > 0 && (
+        {sharedWith && sharedWith.length > 0 && getUserNames && (
           <div className="mb-2">
             <CollaboratorsAvatars 
-              collaborators={collaborators} 
+              collaborators={getUserNames(sharedWith)} 
               size="sm"
               maxDisplay={3}
             />

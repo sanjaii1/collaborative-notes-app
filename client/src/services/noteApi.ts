@@ -10,7 +10,7 @@ export const createNote = async (data: { title: string; content: string; tags?: 
   return res.data;
 };
 
-export const updateNote = async (id: string, data: Partial<{ title: string; content: string; tags?: string[]; isFavorite?: boolean; isStarred?: boolean }>): Promise<any> => {
+export const updateNote = async (id: string, data: Partial<{ title: string; content: string; tags?: string[]; isFavorite?: boolean; isStarred?: boolean; isPinned?: boolean }>): Promise<any> => {
   const res = await api.put(`/notes/${id}`, data);
   return res.data;
 };

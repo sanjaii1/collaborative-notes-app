@@ -2,24 +2,28 @@ import React from "react";
 import { FaShareAlt, FaUserCircle } from "react-icons/fa";
 import CollaboratorsAvatars from "./CollaboratorsAvatars";
 
+interface CollaborationQuickAccessProps {
+  getUserNames?: (userIds: string[]) => string[];
+}
+
 const mockSharedNotes = [
   {
     id: "1",
     title: "Project Plan",
     sharedBy: "Alex Johnson",
     time: "5 mins ago",
-    collaborators: ["Alex Johnson", "You", "Sam Wilson", "David Chen"],
+    sharedWith: ["507f1f77bcf86cd799439011", "507f1f77bcf86cd799439012", "507f1f77bcf86cd799439013"],
   },
   {
     id: "2",
     title: "Budget 2025",
     sharedBy: "John Smith",
     time: "1 hour ago",
-    collaborators: ["John Smith", "You", "Emily Davis"],
+    sharedWith: ["507f1f77bcf86cd799439015", "507f1f77bcf86cd799439016"],
   },
 ];
 
-const CollaborationQuickAccess: React.FC = () => {
+const CollaborationQuickAccess: React.FC<CollaborationQuickAccessProps> = ({ getUserNames }) => {
   return (
     <div className="mt-8 bg-white rounded-lg shadow p-4">
       <button
@@ -38,11 +42,13 @@ const CollaborationQuickAccess: React.FC = () => {
             </div>
             <div className="flex items-center gap-2 text-xs text-gray-500">
               Shared by {note.sharedBy}
-              <CollaboratorsAvatars 
-                collaborators={note.collaborators} 
-                size="sm"
-                maxDisplay={3}
-              />
+              {getUserNames && (
+                <CollaboratorsAvatars 
+                  collaborators={getUserNames(note.sharedWith)} 
+                  size="sm"
+                  maxDisplay={3}
+                />
+              )}
             </div>
           </li>
         ))}

@@ -1,4 +1,3 @@
-// api/routes/noteRoutes.js
 import express from "express";
 import {
   getNotes,

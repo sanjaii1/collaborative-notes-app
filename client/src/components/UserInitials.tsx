@@ -8,7 +8,6 @@ interface UserInitialsProps {
 }
 
 const UserInitials: React.FC<UserInitialsProps> = ({ name, size = "md", className = "" }) => {
-  // Generate initials from name
   const getInitials = (name: string) => {
     return name
       .split(" ")
@@ -18,7 +17,6 @@ const UserInitials: React.FC<UserInitialsProps> = ({ name, size = "md", classNam
       .slice(0, 2);
   };
 
-  // Generate consistent color based on name
   const getColor = (name: string) => {
     const colors = [
       "bg-blue-500",
@@ -42,7 +40,6 @@ const UserInitials: React.FC<UserInitialsProps> = ({ name, size = "md", classNam
     lg: "w-10 h-10 text-base"
   };
 
-  // Special case for "You" - show user icon
   if (name === "You") {
     return (
       <div

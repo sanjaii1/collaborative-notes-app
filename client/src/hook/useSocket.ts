@@ -1,4 +1,3 @@
-// src/hooks/useSocket.ts
 import { useEffect } from "react";
 import socket from "../services/socket";
 

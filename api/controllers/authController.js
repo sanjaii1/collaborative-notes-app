@@ -1,15 +1,12 @@
-// api/controllers/authController.js
 import { User } from "../models/userModel.js";
 import jwt from "jsonwebtoken";
 
-// 🔐 Create JWT token
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: "7d",
   });
 };
 
-// ✅ POST /api/auth/register
 export const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -30,7 +27,6 @@ export const registerUser = async (req, res) => {
   });
 };
 
-// ✅ POST /api/auth/login
 export const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
@@ -51,7 +47,6 @@ export const getAllUsers = async (req, res) => {
   res.json(users);
 };
 
-// ✅ GET /api/auth/me (Protected)
 export const getMe = async (req, res) => {
   const user = await User.findById(req.user.id).select("-password");
   res.json(user);

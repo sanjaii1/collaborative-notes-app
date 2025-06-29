@@ -15,8 +15,7 @@ type LoginForm = z.infer<typeof loginSchema>;
 
 export default function Login(): React.JSX.Element {
     const navigate = useNavigate();
-    // const user = useAuthStore(state => state.user);
-    //   const logout = useAuthStore((state) => state.logout);
+
 
     const {
         register,

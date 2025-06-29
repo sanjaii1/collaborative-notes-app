@@ -2,7 +2,7 @@ import React from "react";
 
 interface NoteDetailModalProps {
   open: boolean;
-  note: any; // You can type this better if you have a Note type
+  note: any; 
   onClose: () => void;
 }
 
@@ -23,7 +23,7 @@ const NoteDetailModal: React.FC<NoteDetailModalProps> = ({ open, note, onClose }
           ))}
         </div>
         <div className="text-xs text-gray-400">Last edited: 2024-06-01</div>
-        {/* Add more details as needed */}
+    
       </div>
     </div>
   );

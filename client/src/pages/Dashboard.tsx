@@ -1,11 +1,5 @@
-// import Sidebar from "../components/Sidebar";
 import OverviewWidgets from "../components/OverviewWidgets";
-// import PinnedNotes from "../components/PinnedNotes";
-// import NotesToolbar from "../components/NotesToolbar";
-// import NotesList from "../components/NotesList";
 import QuickCreateNoteModal from "../components/QuickCreateNoteModal";
-// import RecentActivityFeed from "../components/RecentActivityFeed";
-// import CollaborationQuickAccess from "../components/CollaborationQuickAccess";
 import { toast } from "react-toastify";
 import { useQuery } from "@tanstack/react-query";
 import { fetchUsers } from "../services/userApi";
@@ -18,7 +12,6 @@ import {
 } from "../services/noteApi";
 import { useEffect, useState } from "react";
 import NoteCard from "../components/NoteCard";
-import { useSocket } from "../hook/useSocket";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuthStore } from "../store/authStore";
 import socket from "../services/socket";
@@ -41,9 +34,6 @@ export default function Dashboard(): React.JSX.Element {
     queryFn: fetchNotes,
   });
 
-  // useSocket("refresh-notes", () => {
-  //   queryClient.invalidateQueries({ queryKey: ["notes"] });
-  // });
 
 
   useEffect(() => {
@@ -60,7 +50,6 @@ export default function Dashboard(): React.JSX.Element {
     };
   }, [user?._id]);  
 
-  // Function to map user IDs to user names
   const getUserNamesFromIds = (userIds: string[]): string[] => {
     return userIds.map(id => {
       const user = users.find(u => u.id === id);
@@ -70,28 +59,15 @@ export default function Dashboard(): React.JSX.Element {
 
   const handleCreateNote = async (note: { title: string; content: string; tags: string[] }) => {
     try {
-      // If your API expects tags, include them; otherwise, just title and content
       await createNote({ title: note.title, content: note.content, tags: note.tags });
-      // Optionally, show a success toast and refresh notes
       toast.success("Note created!");
-      refetch(); // Refetch notes after creating
+      refetch(); 
     } catch (err: any) {
-      // Optionally, show an error toast
       toast.error(err.response?.data?.message || "Failed to create note");
     }
   };
 
-  // const handleTogglePin = async (noteId: string, isPinned: boolean) => {
-  //   try {
-  //     await updateNote(noteId, { isPinned: !isPinned });
-  //     toast.success(`Note ${!isPinned ? 'pinned' : 'unpinned'}!`);
-  //     refetch(); // Refetch notes after updating
-  //   } catch (err: any) {
-  //     toast.error(err.response?.data?.message || "Failed to update note");
-  //   }
-  // };
 
-  // Add this function to handle toggling favorite/starred status
   const handleToggleFavorite = async (noteId: string, isStarred: boolean) => {
     try {
       await updateNote(noteId, { isStarred: !isStarred });
@@ -102,11 +78,9 @@ export default function Dashboard(): React.JSX.Element {
     }
   };
 
-  // Filter starred and shared notes from the real data
   const starredNotes = notes.filter((note: any) => note.isStarred === true);
   const sharedNotes = notes.filter((note: any) => note.sharedWith && note.sharedWith.length > 0);
 
-  // Calculate overview statistics from real data
   const overviewStats = {
     totalNotes: notes.length,
     recentlyEdited: notes.filter((note: any) => {
@@ -116,7 +90,7 @@ export default function Dashboard(): React.JSX.Element {
     }).length,
     sharedWithMe: notes.filter((note: any) => note.sharedWith && note.sharedWith.length > 0).length,
     favorites: notes.filter((note: any) => note.isStarred).length,
-    trash: 0, // This would need to be fetched separately if you have a trash system
+    trash: 0, 
   };
 
   if (isLoading) {
@@ -129,7 +103,6 @@ export default function Dashboard(): React.JSX.Element {
 
   return (
     <div className="flex  bg-gray-50">
-      {/* <Sidebar /> */}
       <main className="flex-1 p-8 relative">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-2xl font-bold text-gray-800">Dashboard Overview</h2>
@@ -143,7 +116,6 @@ export default function Dashboard(): React.JSX.Element {
         </div>
         <OverviewWidgets stats={overviewStats} />
 
-        {/* Starred Notes Section */}
         <section className="mb-2">
           <h3 className="text-lg font-semibold mb-3 text-gray-700">Starred Notes</h3>
           {starredNotes.length === 0 ? (
@@ -164,7 +136,6 @@ export default function Dashboard(): React.JSX.Element {
                     isShared={note.sharedWith && note.sharedWith.length > 0}
                     lastEdited={note.updatedAt ? new Date(note.updatedAt).toISOString().split('T')[0] : undefined}
                     onFavorite={() => handleToggleFavorite(note.id, note.isStarred)}
-                    // Optionally add onPin, onShare, onDelete, onEdit, onView handlers as needed
                     showEdit={false}
                     showDelete={false}
                     showView={false}
@@ -176,7 +147,6 @@ export default function Dashboard(): React.JSX.Element {
           )}
         </section>
 
-        {/* Shared Notes Section */}
         <section className="mb-2">
           <h3 className="text-lg font-semibold mb-3 text-gray-700">Shared With Me</h3>
           {sharedNotes.length === 0 ? (
@@ -207,7 +177,6 @@ export default function Dashboard(): React.JSX.Element {
           )}
         </section>
 
-        {/* Centered View All Notes Button */}
         <div className="flex justify-center my-2">
           <button
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full shadow-lg text-lg transition"
@@ -223,10 +192,7 @@ export default function Dashboard(): React.JSX.Element {
           onCreate={handleCreateNote}
         />
       </main>
-      {/* <div className="hidden lg:flex flex-col gap-6 w-80 ml-6">
-        <RecentActivityFeed />
-        <CollaborationQuickAccess />
-      </div> */}
+
     </div>
   );
 }

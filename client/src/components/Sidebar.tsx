@@ -9,9 +9,7 @@ const navLinks = [
     { name: "All Notes", icon: <FaRegStickyNote />, path: "/notes" },
     { name: "Shared", icon: <FaShareAlt />, path: "/shared" },
     { name: "Favorites", icon: <FaStar />, path: "/favorites" },
-    // { name: "Trash", icon: <FaTrash />, path: "/trash" },
     { name: "Tags", icon: <FaTags />, path: "/tags" },
-    // { name: "Activity", icon: <FaChartBar />, path: "/activity" },
 ];
 
 const Sidebar: React.FC = () => {

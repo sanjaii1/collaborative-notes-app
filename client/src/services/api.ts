@@ -1,14 +1,12 @@
-// src/services/api.ts
 import axios from "axios";
 import type { AxiosInstance } from "axios";
 import { useAuthStore } from "../store/authStore";
 
 const api: AxiosInstance = axios.create({
   baseURL: "http://localhost:5000/api",
-  withCredentials: true, // optional if backend uses cookies
+  withCredentials: true,
 });
 
-// Axios interceptor to attach token
 api.interceptors.request.use((config) => {
   const token = useAuthStore.getState().token;
   if (token) {

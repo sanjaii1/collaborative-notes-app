@@ -34,7 +34,6 @@ const TabSessionsOverview: React.FC = () => {
   useEffect(() => {
     loadTabSessions();
     
-    // Refresh every 5 seconds
     const interval = setInterval(loadTabSessions, 5000);
     
     return () => clearInterval(interval);
@@ -46,7 +45,6 @@ const TabSessionsOverview: React.FC = () => {
 
   return (
     <>
-      {/* Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="fixed top-4 left-4 bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg shadow-lg z-50 transition-colors"
@@ -54,7 +52,6 @@ const TabSessionsOverview: React.FC = () => {
         {isOpen ? 'Hide' : 'Show'} Tab Sessions ({tabSessions.length})
       </button>
 
-      {/* Modal */}
       {isOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
           <div className="bg-white rounded-lg shadow-xl p-6 max-w-2xl w-full mx-4 max-h-[80vh] overflow-y-auto">

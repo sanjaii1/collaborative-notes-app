@@ -4,7 +4,7 @@ interface OverviewWidgetProps {
   icon: React.ReactNode;
   label: string;
   count: number;
-  color: string; // Tailwind color class for icon background
+  color: string; 
   onClick?: () => void;
   link?: string;
 }

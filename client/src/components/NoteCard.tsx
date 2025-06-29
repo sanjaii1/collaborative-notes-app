@@ -14,17 +14,14 @@ interface NoteCardProps {
   isStarred?: boolean;
   isShared?: boolean;
   lastEdited?: string;
-  // Selection props
   checked?: boolean;
   onCheck?: (id: string) => void;
-  // Action handlers
   onPin?: (id: string) => void;
   onFavorite?: (id: string) => void;
   onShare?: (id: string) => void;
   onDelete?: (id: string) => void;
   onEdit?: (id: string) => void;
   onView?: (id: string) => void;
-  // Control which buttons to show
   showPin?: boolean;
   showFavorite?: boolean;
   showShare?: boolean;
@@ -58,7 +55,7 @@ const NoteCard: React.FC<NoteCardProps> = ({
   showView = true,
 }) => {
   return (
-    <div className="bg-white rounded-lg shadow p-4 flex flex-col gap-2 min-h-[180px] hover:ring-2 ring-blue-200 cursor-pointer relative">
+    <div className="bg-white rounded-lg shadow p-4 flex flex-col gap-2 min-h-[180px] hover:ring-2 ring-blue-200  relative">
       {onCheck && (
         <div className="absolute top-2 left-2 z-10">
           <input
@@ -76,24 +73,24 @@ const NoteCard: React.FC<NoteCardProps> = ({
         <span className="font-semibold text-lg truncate" title={title}>{title}</span>
         <div className="flex gap-2">
           {showFavorite && (
-            <button title="Favorite" onClick={e => { e.stopPropagation(); onFavorite && onFavorite(id); }}>
+            <button title="Favorite" onClick={e => { e.stopPropagation(); onFavorite && onFavorite(id); }} className="cursor-pointer">
               {isStarred ? <FaStar className="text-pink-500" /> : <FaRegStar className="text-gray-400" />}
             </button>
           )}
           {showShare && (
-            <button title="Share" onClick={e => { e.stopPropagation(); onShare && onShare(id); }}>
+            <button title="Share" onClick={e => { e.stopPropagation(); onShare && onShare(id); }} className="cursor-pointer">
               <FaShareAlt className="text-blue-500 hover:text-blue-700" />
             </button>
           )}
           {isShared && <FaUsers className="text-green-500" title="Shared" />}
           {showEdit && (
-            <button title="Edit" onClick={e => { e.stopPropagation(); onEdit && onEdit(id); }}><FaEdit className="text-blue-400" /></button>
+            <button title="Edit" onClick={e => { e.stopPropagation(); onEdit && onEdit(id); }} className="cursor-pointer"><FaEdit className="text-blue-400" /></button>
           )}
           {showDelete && (
-            <button title="Delete" onClick={e => { e.stopPropagation(); onDelete && onDelete(id); }}><FaTrash className="text-red-400" /></button>
+            <button title="Delete" onClick={e => { e.stopPropagation(); onDelete && onDelete(id); }} className="cursor-pointer"><FaTrash className="text-red-400" /></button>
           )}
           {showView && (
-            <button title="View Details" onClick={e => { e.stopPropagation(); onView && onView(id); }}>
+            <button title="View Details" onClick={e => { e.stopPropagation(); onView && onView(id); }} className="cursor-pointer">
               <FaEye className="text-gray-500 hover:text-blue-500" />
             </button>
           )}

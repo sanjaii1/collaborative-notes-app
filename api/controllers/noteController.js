@@ -1,4 +1,3 @@
-// api/controllers/noteController.js
 import { Note } from "../models/noteModel.js";
 
 export const getNotes = async (req, res) => {
@@ -64,7 +63,7 @@ export const deleteNote = async (req, res) => {
 };
 
 export const shareNote = async (req, res) => {
-  const { userIds } = req.body; // array of user IDs to share with
+  const { userIds } = req.body; 
   const note = await Note.findById(req.params.id);
 
   if (!note || note.user.toString() !== req.user.id) {

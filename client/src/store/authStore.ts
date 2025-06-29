@@ -25,14 +25,10 @@ export const useAuthStore: any = create<AuthState>((set, get) => ({
   tabId: tabManager.getTabId(),
 
   login: (user, token) => {
-    // Store auth data in tab-specific storage
     tabManager.setTabData('user', user);
     tabManager.setTabData('token', token);
     tabManager.setTabData('isAuthenticated', true);
 
-
-    console.log(user,"asjdhjsahdsaousidjhka")
-    
     set({
       user,
       token,
@@ -41,7 +37,6 @@ export const useAuthStore: any = create<AuthState>((set, get) => ({
   },
 
   logout: () => {
-    // Clear tab-specific auth data
     tabManager.clearTabData();
     
     set({

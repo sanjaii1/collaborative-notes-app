@@ -1,4 +1,3 @@
-// api/index.js (or app.js depending on your setup)
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
@@ -16,7 +15,7 @@ connectDB();
 const app = express();
 
 
-const server = http.createServer(app); // create HTTP server
+const server = http.createServer(app); 
 const io = new Server(server, {
   cors: {
     origin: "http://localhost:5173",
@@ -25,8 +24,8 @@ const io = new Server(server, {
 });
 
 app.use(cors({
-    origin: "http://localhost:5173", // or true for all origins (not recommended for production)
-    credentials: true // if you use cookies
+    origin: "http://localhost:5173", 
+    credentials: true 
   }));
 app.use(express.json());
 
@@ -40,7 +39,7 @@ app.set("io", io);
 io.on("connection", (socket) => {
   const userId = socket.handshake.query.userId;
   if (userId) {
-    socket.join(userId); // Join user-specific room
+    socket.join(userId);
     console.log(`User ${userId} connected to socket`);
   }
 

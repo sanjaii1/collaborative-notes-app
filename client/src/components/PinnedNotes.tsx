@@ -21,14 +21,13 @@ interface PinnedNotesProps {
 const PinnedNotes: React.FC<PinnedNotesProps> = ({ notes, getUserNames, onTogglePin }) => {
   const [pinned, setPinned] = useState(notes || []);
 
-  // Update pinned notes when notes prop changes
   React.useEffect(() => {
     setPinned(notes || []);
   }, [notes]);
 
   const handleUnpin = async (id: string) => {
     if (onTogglePin) {
-      await onTogglePin(id, true); // true means it's currently pinned, so we're unpinning it
+      await onTogglePin(id, true); 
     } else {
       setPinned((prev) => prev.filter((note) => note.id !== id));
     }

@@ -66,12 +66,6 @@ const AllNotesPage: React.FC = () => {
     });
   };
 
-  // Function to get current user's name
-  // const getCurrentUserName = (): string => {
-  //   const currentUser = useAuthStore.getState().user;
-  //   return currentUser?.name || 'You';
-  // };
-
   const filteredNotes = useMemo(() => {
     let filtered = [...notes];
     if (search.trim()) {
@@ -93,7 +87,6 @@ const AllNotesPage: React.FC = () => {
       case "favorites":
         filtered.sort((a, b) => (b.isStarred ? 1 : 0) - (a.isStarred ? 1 : 0));
         break;
-      // Add more sort logic as needed
       default:
         break;
     }
@@ -179,7 +172,6 @@ const AllNotesPage: React.FC = () => {
   };
 
   const toggleUserSelection = (userId: string) => {
-    // Don't allow selecting the current user
     if (userId === useAuthStore.getState().user?.id) {
       return;
     }
@@ -243,7 +235,6 @@ const AllNotesPage: React.FC = () => {
             <div
               key={note.id}
               className="bg-white rounded-lg shadow p-4 flex flex-col gap-2 cursor-pointer hover:ring-2 ring-blue-200"
-              // onClick={() => { setSelectedNote(note); setDetailOpen(true); }}
             >
               <div className="flex items-center justify-between mb-1">
                 <span className="font-semibold text-lg truncate" title={note.title}>{note.title}</span>
@@ -368,7 +359,6 @@ const AllNotesPage: React.FC = () => {
         onClose={() => setDetailOpen(false)}
       />
       
-      {/* Delete Confirmation Modal */}
       {deleteModalOpen && noteToDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm overflow-hidden">
           <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
@@ -396,7 +386,6 @@ const AllNotesPage: React.FC = () => {
           </div>
         </div>
       )}
-      {/* Share Modal */}
       {shareModalOpen && noteToShare && (
         <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm overflow-hidden">
           <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md max-h-96 overflow-y-auto">

@@ -4,7 +4,6 @@ import { login, register, getMe } from "../services/authApi";
 import { useAuthStore } from "../store/authStore";
 import { useEffect } from "react";
 
-// LOGIN
 export const useLogin = (): UseMutationResult<any, unknown, any, unknown> =>
   useMutation({
     mutationFn: login,
@@ -13,7 +12,6 @@ export const useLogin = (): UseMutationResult<any, unknown, any, unknown> =>
     },
   });
 
-// REGISTER
 export const useRegister = (): UseMutationResult<any, unknown, any, unknown> =>
   useMutation({
     mutationFn: register,
@@ -22,7 +20,6 @@ export const useRegister = (): UseMutationResult<any, unknown, any, unknown> =>
     },
   });
 
-// GET CURRENT USER
 export const useMe = (): UseQueryResult<any, Error> =>
   useQuery({
     queryKey: ["me"],
@@ -30,7 +27,6 @@ export const useMe = (): UseQueryResult<any, Error> =>
     enabled: !!useAuthStore.getState().token,
   });
 
-// Initialize auth state from storage
 export const useInitializeAuth = (): void => {
   useEffect(() => {
     useAuthStore.getState().initializeFromStorage();

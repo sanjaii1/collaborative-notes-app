@@ -50,7 +50,6 @@ const NotesToolbar: React.FC = () => {
 
   return (
     <div className="flex flex-wrap items-center gap-3 mb-8 bg-white p-4 rounded-lg shadow relative">
-      {/* Search Bar */}
       <div className="relative">
         <input
           ref={inputRef}
@@ -71,7 +70,6 @@ const NotesToolbar: React.FC = () => {
         )}
       </div>
 
-      {/* Filter Buttons */}
       <div className="flex gap-2">
         <button
           className={`px-3 py-2 rounded ${filter === "all" ? "bg-blue-500 text-white" : "bg-gray-100 text-gray-700"}`}
@@ -93,7 +91,6 @@ const NotesToolbar: React.FC = () => {
         </button>
       </div>
 
-      {/* Tags Dropdown */}
       <select
         className="border rounded px-3 py-2 bg-gray-50 text-gray-700"
         value={selectedTag || ""}
@@ -105,12 +102,10 @@ const NotesToolbar: React.FC = () => {
         ))}
       </select>
 
-      {/* Date Range Picker Placeholder */}
       <button className="px-3 py-2 rounded bg-gray-100 text-gray-700 cursor-not-allowed" disabled>
         Date Range
       </button>
 
-      {/* Sort Dropdown */}
       <select
         className="border rounded px-3 py-2 bg-gray-50 text-gray-700"
         value={sort}

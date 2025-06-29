@@ -1,4 +1,3 @@
-// src/components/AuthInput.tsx
 import type { InputHTMLAttributes, ReactElement } from "react";
 import type { FieldError } from "react-hook-form";
 

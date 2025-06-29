@@ -1,4 +1,3 @@
-// Tab Manager for multi-tab authentication
 export class TabManager {
   private static instance: TabManager;
   private tabId: string;
@@ -22,28 +21,22 @@ export class TabManager {
   }
 
   private initializeTab(): void {
-    // Store tab info in sessionStorage
     sessionStorage.setItem('currentTabId', this.tabId);
     
-    // Listen for storage changes from other tabs
     window.addEventListener('storage', this.handleStorageChange.bind(this));
     
-    // Clean up when tab is closed
     window.addEventListener('beforeunload', () => {
       this.cleanupTab();
     });
   }
 
   private handleStorageChange(event: StorageEvent): void {
-    // Handle changes from other tabs if needed
     if (event.key === 'currentTabId' && event.newValue !== this.tabId) {
-      // Another tab was created
       console.log('New tab detected:', event.newValue);
     }
   }
 
   private cleanupTab(): void {
-    // Clean up tab-specific data when tab is closed
     localStorage.removeItem(this.storageKey);
     sessionStorage.removeItem('currentTabId');
   }

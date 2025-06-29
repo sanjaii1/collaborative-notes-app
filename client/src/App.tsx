@@ -20,7 +20,8 @@ const App: React.FC = () => {
   useInitializeAuth();
   const user = useAuthStore((state: any) => state.user);
 
-  console.log(user,"ajshkhakshsh")
+  console.log(user,"asjdhjshdjsah")
+
 
   useEffect(() => {
     if (user) {

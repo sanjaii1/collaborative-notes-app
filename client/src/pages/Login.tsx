@@ -27,7 +27,10 @@ export default function Login(): React.JSX.Element {
     const onSubmit = async (data: LoginForm) => {
         try {
           const res = await api.post("/auth/login", data);
-          const { user, token } = res.data;
+
+          console.log(res.data,"asiudhkjsak")
+          const { token, _id, name, email } = res.data;
+          const user = { id: _id, name, email };
       
           useAuthStore.getState().login(user, token);
           toast.success("Login successful!");

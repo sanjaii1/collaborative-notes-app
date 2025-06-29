@@ -29,6 +29,9 @@ export const useAuthStore: any = create<AuthState>((set, get) => ({
     tabManager.setTabData('user', user);
     tabManager.setTabData('token', token);
     tabManager.setTabData('isAuthenticated', true);
+
+
+    console.log(user,"asjdhjsahdsaousidjhka")
     
     set({
       user,

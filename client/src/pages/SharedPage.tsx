@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { FaStar, FaRegStar, FaTrash, FaEdit, FaUsers, FaTh, FaBars, FaEye, FaShareAlt, FaSearch } from "react-icons/fa";
+import {  FaUsers, FaTh, FaBars, FaSearch } from "react-icons/fa";
 import NoteCard from "../components/NoteCard";
 import NoteDetailModal from "../components/NoteDetailModal";
 import { useQuery } from "@tanstack/react-query";

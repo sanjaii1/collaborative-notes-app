@@ -1,8 +1,6 @@
 import React from "react";
-import { FaRegStickyNote, FaShareAlt, FaStar, FaTrash, FaTags, FaChartBar } from "react-icons/fa";
-import TrashBinModal from "./TrashBinModal";
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { FaRegStickyNote, FaShareAlt, FaStar, FaTags, FaChartBar } from "react-icons/fa";
+import { Link, useLocation,useNavigate } from "react-router-dom";
 import UserInitials from "./UserInitials";
 import { useAuthStore } from "../store/authStore";
 
@@ -17,20 +15,21 @@ const navLinks = [
 ];
 
 const Sidebar: React.FC = () => {
-    const [trashOpen, setTrashOpen] = useState(false);
     const user = useAuthStore((state: any) => state.user);
+    const location = useLocation();
+    const navigate = useNavigate();
 
     return (
         <aside className={`h-screen w-64 bg-white shadow flex flex-col justify-between`}>
             <div>
-                <div className="p-6 text-2xl font-bold text-blue-600">NotesApp</div>
+                <div className="p-6 text-2xl font-bold text-blue-600">NoteNest</div>
                 <nav className="mt-8">
                     <ul className="space-y-2">
                         {navLinks.map((link) => (
                             <li key={link.name}>
                                 <Link
                                     to={link.path}
-                                    className="flex items-center px-6 py-3 text-gray-700 hover:bg-blue-100 rounded transition"
+                                    className={`flex items-center px-6 py-3 rounded transition text-gray-700 hover:bg-blue-100 ${location.pathname === link.path ? 'bg-blue-500 text-white font-semibold' : ''}`}
                                 >
                                     <span className="mr-3 text-lg">{link.icon}</span>
                                     {link.name}
@@ -39,7 +38,6 @@ const Sidebar: React.FC = () => {
                         ))}
                     </ul>
                 </nav>
-                {/* <TagManager /> */}
             </div>
             <div className="p-6 border-t border-gray-200 flex flex-col items-center gap-2">
                 {user && (
@@ -54,8 +52,7 @@ const Sidebar: React.FC = () => {
                 <button
                     className="w-full py-2 rounded bg-blue-500 text-white text-sm hover:bg-blue-600 mb-2"
                     onClick={() => {
-                       
-                        window.location.href = "/login";
+                        navigate("/login");
                     }}
                 >
                     Logout

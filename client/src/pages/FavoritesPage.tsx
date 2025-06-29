@@ -62,12 +62,12 @@ const FavoritesPage: React.FC = () => {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-2 sm:p-4 md:p-6">
       <div className="mb-6">
-        <h2 className="text-2xl font-bold mb-2 text-gray-800 flex items-center gap-2">
+        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 text-gray-800 flex items-center gap-2">
           <FaStar className="text-pink-500" /> Favorites
         </h2>
-        <p className="text-gray-600">
+        <p className="text-gray-600 text-sm sm:text-base">
           {favoriteNotes.length === 0
             ? "No favorite notes yet. Mark notes as favorite to see them here."
             : `${favoriteNotes.length} favorite note${favoriteNotes.length !== 1 ? 's' : ''} found.`}
@@ -75,28 +75,28 @@ const FavoritesPage: React.FC = () => {
       </div>
 
       {/* Search and View Controls */}
-      <div className="flex flex-col sm:flex-row gap-4 mb-6">
-        <div className="relative flex-1">
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6">
+        <div className="relative w-full sm:w-auto flex-1">
           <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
           <input
             type="text"
             placeholder="Search favorite notes..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent text-sm sm:text-base"
           />
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 w-full sm:w-auto justify-end">
           <button
             onClick={() => setViewMode('grid')}
-            className={`p-2 rounded-lg ${viewMode === 'grid' ? 'bg-pink-500 text-white' : 'bg-gray-200 text-gray-600'}`}
+            className={`w-1/2 sm:w-auto p-2 rounded-lg ${viewMode === 'grid' ? 'bg-pink-500 text-white' : 'bg-gray-200 text-gray-600'}`}
             title="Grid View"
           >
             <FaTh />
           </button>
           <button
             onClick={() => setViewMode('list')}
-            className={`p-2 rounded-lg ${viewMode === 'list' ? 'bg-pink-500 text-white' : 'bg-gray-200 text-gray-600'}`}
+            className={`w-1/2 sm:w-auto p-2 rounded-lg ${viewMode === 'list' ? 'bg-pink-500 text-white' : 'bg-gray-200 text-gray-600'}`}
             title="List View"
           >
             <FaBars />
@@ -106,14 +106,14 @@ const FavoritesPage: React.FC = () => {
 
       {/* Notes Display */}
       {isLoading ? (
-        <div className="text-center text-gray-400 italic">Loading favorite notes...</div>
+        <div className="text-center text-gray-400 italic text-base sm:text-lg">Loading favorite notes...</div>
       ) : filteredNotes.length === 0 ? (
-        <div className="text-center py-12">
-          <FaStar className="mx-auto text-6xl text-gray-300 mb-4" />
-          <h3 className="text-xl font-semibold text-gray-500 mb-2">
+        <div className="text-center py-8 sm:py-12">
+          <FaStar className="mx-auto text-5xl sm:text-6xl text-gray-300 mb-4" />
+          <h3 className="text-lg sm:text-xl font-semibold text-gray-500 mb-2">
             {searchTerm ? 'No notes found' : 'No favorite notes yet'}
           </h3>
-          <p className="text-gray-400">
+          <p className="text-gray-400 text-sm sm:text-base">
             {searchTerm
               ? 'Try adjusting your search terms'
               : 'Mark notes as favorite to see them here.'}
@@ -121,8 +121,8 @@ const FavoritesPage: React.FC = () => {
         </div>
       ) : (
         <div className={viewMode === 'grid'
-          ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'
-          : 'space-y-4'}>
+          ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4'
+          : 'space-y-3 sm:space-y-4'}>
           {filteredNotes.map((note: any) => (
             <div key={note.id} className={viewMode === 'list' ? 'w-full' : ''}>
               <NoteCard

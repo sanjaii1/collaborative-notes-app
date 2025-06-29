@@ -46,13 +46,13 @@ export default function Login(): React.JSX.Element {
 
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-blue-300 to-blue-500">
-            <div className="w-full max-w-md bg-white/90 p-8 rounded-2xl shadow-2xl border border-blue-100">
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-blue-300 to-blue-500 px-2 sm:px-4">
+            <div className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg bg-white/90 p-4 sm:p-6 md:p-8 rounded-2xl shadow-2xl border border-blue-100">
                 <LogoHeader />
-                <h2 className="text-2xl font-bold text-center text-blue-700 mb-6">
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-center text-blue-700 mb-4 sm:mb-6">
                     Sign in to your account
                 </h2>
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
                     <AuthInput
                         label="Email"
                         type="email"
@@ -66,17 +66,17 @@ export default function Login(): React.JSX.Element {
                         error={("type" in (errors.password ?? {})) ? (errors.password as FieldError) : undefined}
                     />
                     <button
-                        className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold text-lg shadow hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        className="w-full bg-blue-600 text-white py-2 sm:py-3 rounded-lg font-semibold text-base sm:text-lg shadow hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400"
                     >
                         Login
                     </button>
-                    <div className="text-right mt-2">
-                        <a href="/forgot-password" className="text-blue-600 hover:underline text-sm">
+                    <div className="text-right mt-1 sm:mt-2">
+                        <a href="/forgot-password" className="text-blue-600 hover:underline text-xs sm:text-sm">
                             Forgot password?
                         </a>
                     </div>
                 </form>
-                <div className="mt-6 text-center text-sm text-gray-500">
+                <div className="mt-4 sm:mt-6 text-center text-xs sm:text-sm text-gray-500">
                     Don&apos;t have an account?{" "}
                     <a href="/register" className="text-blue-600 hover:underline font-medium">
                         Register

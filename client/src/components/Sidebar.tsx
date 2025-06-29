@@ -12,15 +12,23 @@ const navLinks = [
     { name: "Tags", icon: <FaTags />, path: "/tags" },
 ];
 
-const Sidebar: React.FC = () => {
+const Sidebar: React.FC<{ isOpen?: boolean; onClose?: () => void }> = ({ isOpen = true, onClose }) => {
     const user = useAuthStore((state: any) => state.user);
     const location = useLocation();
     const navigate = useNavigate();
 
-    return (
-        <aside className={`h-screen w-64 bg-white shadow flex flex-col justify-between`}>
+    // Determine if mobile drawer mode
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
+    const sidebarContent = (
+        <>
             <div>
-                <div className="p-6 text-2xl font-bold text-blue-600">NoteNest</div>
+                <div className="p-6 text-2xl font-bold text-blue-600 flex items-center justify-between">
+                    NoteNest
+                    {/* Close button for mobile */}
+                    {isMobile && onClose && (
+                        <button onClick={onClose} className="sm:hidden text-gray-500 hover:text-blue-600 text-2xl ml-2" aria-label="Close sidebar">&times;</button>
+                    )}
+                </div>
                 <nav className="mt-8">
                     <ul className="space-y-2">
                         {navLinks.map((link) => (
@@ -28,6 +36,7 @@ const Sidebar: React.FC = () => {
                                 <Link
                                     to={link.path}
                                     className={`flex items-center px-6 py-3 rounded transition text-gray-700 hover:bg-blue-100 ${location.pathname === link.path ? 'bg-blue-500 text-white font-semibold' : ''}`}
+                                    onClick={isMobile && onClose ? onClose : undefined}
                                 >
                                     <span className="mr-3 text-lg">{link.icon}</span>
                                     {link.name}
@@ -56,7 +65,33 @@ const Sidebar: React.FC = () => {
                     Logout
                 </button>
             </div>
-        </aside>
+        </>
+    );
+
+    // Desktop sidebar
+    if (!isMobile) {
+        return (
+            <aside className="h-screen w-64 bg-white shadow flex flex-col justify-between hidden sm:flex">
+                {sidebarContent}
+            </aside>
+        );
+    }
+
+    // Mobile drawer sidebar
+    return (
+        <>
+            {/* Overlay */}
+            <div
+                className={`fixed inset-0 bg-black bg-opacity-30 z-40 transition-opacity duration-200 ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+                onClick={onClose}
+            />
+            {/* Sidebar drawer */}
+            <aside
+                className={`fixed top-0 left-0 h-full w-64 bg-white shadow flex flex-col justify-between z-50 transform transition-transform duration-200 ${isOpen ? 'translate-x-0' : '-translate-x-full'} sm:hidden`}
+            >
+                {sidebarContent}
+            </aside>
+        </>
     );
 };
 

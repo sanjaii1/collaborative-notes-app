@@ -102,12 +102,12 @@ export default function Dashboard(): React.JSX.Element {
   }
 
   return (
-    <div className="flex  bg-gray-50">
-      <main className="flex-1 p-8 relative">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-bold text-gray-800">Dashboard Overview</h2>
+    <div className="flex bg-gray-50 min-h-screen">
+      <main className="flex-1 p-2 sm:p-4 md:p-8 relative w-full max-w-full">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2 sm:gap-0">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800">Dashboard Overview</h2>
           <button
-            className="bg-blue-600 text-white px-5 py-2 rounded font-semibold shadow hover:bg-blue-700 transition"
+            className="bg-blue-600 text-white px-4 sm:px-5 py-2 rounded font-semibold shadow hover:bg-blue-700 transition text-base sm:text-lg"
             onClick={() => setModalOpen(true)}
             title="Add Note"
           >
@@ -117,13 +117,13 @@ export default function Dashboard(): React.JSX.Element {
         <OverviewWidgets stats={overviewStats} />
 
         <section className="mb-2">
-          <h3 className="text-lg font-semibold mb-3 text-gray-700">Starred Notes</h3>
+          <h3 className="text-base sm:text-lg font-semibold mb-2 sm:mb-3 text-gray-700">Starred Notes</h3>
           {starredNotes.length === 0 ? (
             <div className="text-center text-gray-400 italic">No starred notes yet. Star important notes to see them here!</div>
           ) : (
-            <div className="flex space-x-4 overflow-x-auto pb-2">
+            <div className="flex space-x-4 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-blue-200 scrollbar-track-blue-50">
               {starredNotes.map((note: any) => (
-                <div key={note.id} className="min-w-[300px] max-w-xs">
+                <div key={note.id} className="min-w-[250px] sm:min-w-[300px] max-w-xs">
                   <NoteCard
                     id={note.id}
                     title={note.title}
@@ -148,13 +148,13 @@ export default function Dashboard(): React.JSX.Element {
         </section>
 
         <section className="mb-2">
-          <h3 className="text-lg font-semibold mb-3 text-gray-700">Shared With Me</h3>
+          <h3 className="text-base sm:text-lg font-semibold mb-2 sm:mb-3 text-gray-700">Shared With Me</h3>
           {sharedNotes.length === 0 ? (
             <div className="text-center text-gray-400 italic">No shared notes yet.</div>
           ) : (
-            <div className="flex space-x-4 overflow-x-auto pb-2">
+            <div className="flex space-x-4 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-blue-200 scrollbar-track-blue-50">
               {sharedNotes.map((note: any) => (
-                <div key={note.id} className="min-w-[300px] max-w-xs">
+                <div key={note.id} className="min-w-[250px] sm:min-w-[300px] max-w-xs">
                   <NoteCard
                     id={note.id}
                     title={note.title}
@@ -179,7 +179,7 @@ export default function Dashboard(): React.JSX.Element {
 
         <div className="flex justify-center my-2">
           <button
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full shadow-lg text-lg transition"
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 sm:py-3 px-6 sm:px-8 rounded-full shadow-lg text-base sm:text-lg transition w-full max-w-xs sm:max-w-md"
             onClick={() => window.location.href = '/notes'}
           >
             View All Notes

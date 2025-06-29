@@ -8,7 +8,8 @@ import { useAuthStore } from "../store/authStore";
 import { useNavigate } from "react-router-dom";
 import LogoHeader from "../components/LogoHeader";
 import { toast } from "react-toastify";
-// import api from "../lib/axios";
+import type { FieldError } from "react-hook-form";
+
 
 type LoginForm = z.infer<typeof loginSchema>;
 
@@ -28,7 +29,6 @@ export default function Login(): React.JSX.Element {
         try {
           const res = await api.post("/auth/login", data);
 
-          console.log(res.data,"asiudhkjsak")
           const { token, _id, name, email } = res.data;
           const user = { id: _id, name, email };
       
@@ -54,13 +54,13 @@ export default function Login(): React.JSX.Element {
                         label="Email"
                         type="email"
                         {...register("email")}
-                        error={errors.email}
+                        error={("type" in (errors.email ?? {})) ? (errors.email as FieldError) : undefined}
                     />
                     <AuthInput
                         label="Password"
                         type="password"
                         {...register("password")}
-                        error={errors.password}
+                        error={("type" in (errors.password ?? {})) ? (errors.password as FieldError) : undefined}
                     />
                     <button
                         className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold text-lg shadow hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400"

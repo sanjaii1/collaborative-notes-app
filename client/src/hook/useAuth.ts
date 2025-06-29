@@ -2,14 +2,14 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import type { UseMutationResult, UseQueryResult } from "@tanstack/react-query";
 import { login, register, getMe } from "../services/authApi";
 import { useAuthStore } from "../store/authStore";
+import { useEffect } from "react";
 
 // LOGIN
 export const useLogin = (): UseMutationResult<any, unknown, any, unknown> =>
   useMutation({
     mutationFn: login,
     onSuccess: (data) => {
-      localStorage.setItem("token", data.token);
-      useAuthStore.getState().setUser(data);
+      useAuthStore.getState().login(data.user, data.token);
     },
   });
 
@@ -18,8 +18,7 @@ export const useRegister = (): UseMutationResult<any, unknown, any, unknown> =>
   useMutation({
     mutationFn: register,
     onSuccess: (data) => {
-      localStorage.setItem("token", data.token);
-      useAuthStore.getState().setUser(data);
+      useAuthStore.getState().login(data.user, data.token);
     },
   });
 
@@ -28,8 +27,14 @@ export const useMe = (): UseQueryResult<any, Error> =>
   useQuery({
     queryKey: ["me"],
     queryFn: getMe,
-    enabled: !!localStorage.getItem("token"),
-    
+    enabled: !!useAuthStore.getState().token,
   });
+
+// Initialize auth state from storage
+export const useInitializeAuth = (): void => {
+  useEffect(() => {
+    useAuthStore.getState().initializeFromStorage();
+  }, []);
+};
 
   

@@ -12,34 +12,38 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ForgotPassword from "./pages/ForgotPassword";
-// import AllNotes from "./components/"
+import { useInitializeAuth } from "./hook/useAuth";
 
-const App: React.FC = () => (
-  <Router>
-    <Routes>
-      <Route path="/" element={<Navigate to="/dashboard" replace />} />
-      <Route path="/" element={<DashboardLayout />}>
-        <Route path="dashboard" element={<Dashboard />} />
-        <Route path="notes" element={<AllNotesPage />} />
-        <Route path="shared" element={<SharedPage />} />
-        <Route path="favorites" element={<FavoritesPage />} />
-        <Route path="trash" element={<TrashPage />} />
-        <Route path="tags" element={<TagsPage />} />
-        <Route path="activity" element={<ActivityPage />} />
-      </Route>
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute>
-            <DashboardLayout />
-          </ProtectedRoute>
-        }
-      />
-      <Route path="/forgot-password" element={<ForgotPassword />} />
-    </Routes>
-  </Router>
-);
+const App: React.FC = () => {
+  useInitializeAuth();
+
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/" element={<DashboardLayout />}>
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="notes" element={<AllNotesPage />} />
+          <Route path="shared" element={<SharedPage />} />
+          <Route path="favorites" element={<FavoritesPage />} />
+          <Route path="trash" element={<TrashPage />} />
+          <Route path="tags" element={<TagsPage />} />
+          <Route path="activity" element={<ActivityPage />} />
+        </Route>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+      </Routes>
+    </Router>
+  );
+};
 
 export default App;

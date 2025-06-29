@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { tabManager } from "../utils/tabManager";
 
 type User = {
   id: string;
@@ -11,40 +11,61 @@ type AuthState = {
   user: User | null;
   token: string | null;
   isAuthenticated: boolean;
+  tabId: string;
   login: (user: User, token: string) => void;
   logout: () => void;
   setUser: (user: User) => void;
+  initializeFromStorage: () => void;
 };
 
-export const useAuthStore: any = create<AuthState>()(
-  persist(
-    (set) => ({
+export const useAuthStore: any = create<AuthState>((set, get) => ({
+  user: null,
+  token: null,
+  isAuthenticated: false,
+  tabId: tabManager.getTabId(),
+
+  login: (user, token) => {
+    // Store auth data in tab-specific storage
+    tabManager.setTabData('user', user);
+    tabManager.setTabData('token', token);
+    tabManager.setTabData('isAuthenticated', true);
+    
+    set({
+      user,
+      token,
+      isAuthenticated: true,
+    });
+  },
+
+  logout: () => {
+    // Clear tab-specific auth data
+    tabManager.clearTabData();
+    
+    set({
       user: null,
       token: null,
       isAuthenticated: false,
+    });
+  },
 
-      login: (user, token) =>
-        set({
-          user,
-          token,
-          isAuthenticated: true,
-        }),
+  setUser: (user) => {
+    tabManager.setTabData('user', user);
+    set((state) => ({
+      ...state,
+      user,
+    }));
+  },
 
-      logout: () =>
-        set({
-          user: null,
-          token: null,
-          isAuthenticated: false,
-        }),
+  initializeFromStorage: () => {
+    const tabData = tabManager.getTabData();
+    const user = tabData.user || null;
+    const token = tabData.token || null;
+    const isAuthenticated = tabData.isAuthenticated || false;
 
-      setUser: (user) =>
-        set((state) => ({
-          ...state,
-          user,
-        })),
-    }),
-    {
-      name: "auth-storage", 
-    }
-  )
-);
+    set({
+      user,
+      token,
+      isAuthenticated,
+    });
+  },
+}));

@@ -16,12 +16,20 @@ import {
   updateNote,
   // deleteNote
 } from "../services/noteApi";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import NoteCard from "../components/NoteCard";
+import { useSocket } from "../hook/useSocket";
+import { useQueryClient } from "@tanstack/react-query";
+import { useAuthStore } from "../store/authStore";
+import socket from "../services/socket";
 
 export default function Dashboard(): React.JSX.Element {
   const [modalOpen, setModalOpen] = useState(false);
 
+  const user = useAuthStore((state: any) => state.user);
+  const queryClient = useQueryClient();
+
+  
   const { data: users = [] } = useQuery({
     queryKey: ["users"],
     queryFn: fetchUsers,
@@ -32,6 +40,25 @@ export default function Dashboard(): React.JSX.Element {
     queryKey: ["notes"],
     queryFn: fetchNotes,
   });
+
+  // useSocket("refresh-notes", () => {
+  //   queryClient.invalidateQueries({ queryKey: ["notes"] });
+  // });
+
+
+  useEffect(() => {
+    if (user?._id) {
+      socket.emit("join", user._id);
+    }
+  
+    socket.on("refresh-notes", () => {
+      queryClient.invalidateQueries({ queryKey: ["notes"] });
+    });
+  
+    return () => {
+      socket.off("refresh-notes");
+    };
+  }, [user?._id]);  
 
   // Function to map user IDs to user names
   const getUserNamesFromIds = (userIds: string[]): string[] => {

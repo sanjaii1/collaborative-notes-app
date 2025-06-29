@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import DashboardLayout from "./pages/DashboardLayout";
 import Dashboard from "./pages/Dashboard";
@@ -13,9 +13,21 @@ import Register from "./pages/Register";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ForgotPassword from "./pages/ForgotPassword";
 import { useInitializeAuth } from "./hook/useAuth";
+import { useAuthStore } from "./store/authStore";
+import socket from "./services/socket";
 
 const App: React.FC = () => {
   useInitializeAuth();
+  const user = useAuthStore((state: any) => state.user);
+
+  console.log(user,"ajshkhakshsh")
+
+  useEffect(() => {
+    if (user) {
+      socket.connect();
+    }
+  }, [user]);
+  
 
   return (
     <Router>

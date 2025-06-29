@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import LogoHeader from "../components/LogoHeader";
 import { toast } from "react-toastify";
 import type { FieldError } from "react-hook-form";
+import { connectSocket } from "../services/socket";
 
 
 type LoginForm = z.infer<typeof loginSchema>;
@@ -30,15 +31,18 @@ export default function Login(): React.JSX.Element {
 
           const { token, _id, name, email } = res.data;
           const user = { id: _id, name, email };
-      
+
+          localStorage.setItem("user", JSON.stringify(user));
+          localStorage.setItem("token", token);
+
           useAuthStore.getState().login(user, token);
           toast.success("Login successful!");
           navigate("/dashboard");
+          connectSocket(user.id);
         } catch (err: any) {
             toast.error(err.response?.data?.message || "Login failed");
         }
       };
-      
 
 
     return (

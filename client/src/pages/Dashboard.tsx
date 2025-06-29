@@ -14,7 +14,7 @@ import { useEffect, useState } from "react";
 import NoteCard from "../components/NoteCard";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuthStore } from "../store/authStore";
-import socket from "../services/socket";
+import { getSocket } from "../services/socket";
 
 export default function Dashboard(): React.JSX.Element {
   const [modalOpen, setModalOpen] = useState(false);
@@ -38,15 +38,15 @@ export default function Dashboard(): React.JSX.Element {
 
   useEffect(() => {
     if (user?._id) {
-      socket.emit("join", user._id);
+      getSocket()?.emit("join", user._id);
     }
   
-    socket.on("refresh-notes", () => {
+    getSocket()?.on("refresh-notes", () => {
       queryClient.invalidateQueries({ queryKey: ["notes"] });
     });
   
     return () => {
-      socket.off("refresh-notes");
+      getSocket()?.off("refresh-notes");
     };
   }, [user?._id]);  
 

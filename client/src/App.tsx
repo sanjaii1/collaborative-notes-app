@@ -14,18 +14,15 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import ForgotPassword from "./pages/ForgotPassword";
 import { useInitializeAuth } from "./hook/useAuth";
 import { useAuthStore } from "./store/authStore";
-import socket from "./services/socket";
+import {connectSocket}  from "./services/socket";
 
 const App: React.FC = () => {
   useInitializeAuth();
   const user = useAuthStore((state: any) => state.user);
 
-  console.log(user,"asjdhjshdjsah")
-
-
   useEffect(() => {
     if (user) {
-      socket.connect();
+      connectSocket(user.id);
     }
   }, [user]);
   
